@@ -56,6 +56,7 @@
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
             <tr>
             <td style="padding:20px;width:100%;vertical-align:middle">
+
               <heading>Highlighted Research</heading>
             </td>
           </tr>
@@ -63,6 +64,54 @@
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
           
           <!-- ########################################################################################## -->
+          <tr onmouseout="blocknerf_stop()" onmouseover="blocknerf_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <div class="two" id='blocknerf_image'><video  width=100% height=100% muted autoplay loop>
+                <source src="images/blocknerf_after.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                </video></div>
+                <img src='data/B2B_Pipeline.jpg' width="160">
+              </div>
+              <script type="text/javascript">
+                function blocknerf_start() {
+                  document.getElementById('blocknerf_image').style.opacity = "1";
+                }
+
+                function blocknerf_stop() {
+                  document.getElementById('blocknerf_image').style.opacity = "0";
+                }
+                blocknerf_stop()
+              </script>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+							<a href="/blur2blur">
+                <papertitle>Blur2Blur: Blur Conversion for Unsupervised Image Deblurring
+                  on Unknown Domains</papertitle>
+              </a>
+              <br>
+              <strong>Bang-Dang Pham</strong>,
+              <a href="https://scholar.google.com/citations?hl=en&authuser=1&user=-BPaFHcAAAAJ">Phong Tran</a>,
+              <a href="https://sites.google.com/site/anhttranusc/">Anh Tran</a>,
+              <a href="https://sites.google.com/view/cuongpham/home">Cuong Pham</a>,
+              <a href="https://rangnguyen.github.io/">Rang Nguyen</a>,
+              <a href="https://www3.cs.stonybrook.edu/~minhhoai/">Minh Hoai</a>
+              <br>
+        <em>Under Review</em>
+              <br>
+              <a href="/blur2blur">project page</a>
+        <!-- / -->
+              <!-- <a href="https://openaccess.thecvf.com/content/CVPR2023/html/Pham_HyperCUT_Video_Sequence_From_a_Single_Blurry_Image_Using_Unsupervised_CVPR_2023_paper.html">paper</a> -->
+        <!-- /                        -->
+              <!-- <a href="https://youtu.be/2iseuTMkZX8?si=avSFXVc_gIP_hnfU">video</a>
+        /
+              <a href="https://drive.google.com/file/d/1frd_7CmWYM9vRANSuwQn56fQPNatw_Ea/view?usp=sharing">poster</a> -->
+              <p>The paper introduces a novel framework to train <strong>camera-specific image deblurring</strong> algorithms by transforming challenging <em><strong>real blurry images into known blur-kernel</strong></em> 
+                only using unpaired data, simplifying the deblurring process and demonstrating superior performance in benchmarks.</p>
+            </td>
+          </tr>
+
+
           <tr onmouseout="blocknerf_stop()" onmouseover="blocknerf_start()">
             <td style="padding:20px;width:25%;vertical-align:middle">
               <div class="one">
@@ -84,7 +133,7 @@
               </script>
             </td>
             <td style="padding:20px;width:75%;vertical-align:middle">
-							<a href="https://github.com/nttung1110/VISHC-PillCIL2022">
+							<a href="https://github.com/VinAIResearch/HyperCUT">
                 <papertitle>HyperCUT: Video Sequence from a Single Blurry Image using Unsupervised Ordering</papertitle>
               </a>
               <br>

@@ -57,10 +57,10 @@
     color: red;
     position: absolute; 
     /* transform: skewY(-23deg);  */ 
-    font-size: 4rem;
+    font-size:4rem;
     color: red;
     filter: blur(4.5px);  
-    transform: skewX(-20deg) translateY(-6px)translateX(-50px); 
+    transform: skewX(-20deg) translateY(-6px)translateX(-120px); 
     /* margin-bottom: 20px; */
   }
   
@@ -70,11 +70,11 @@
   /* margin:1rem; */
   position:absolute;
   display:inline-block;
-  flex-direction:row;
+  /* flex-direction:row; */
   justify-content:center;
   /* border-radius:5rem; */
   /* padding:1rem 0; */
-  transform: skewX(-10deg) skewY(-7deg) translateY(-12px)translateX(-63px);;
+  transform: skewX(-10deg) skewY(-7deg) translateY(-4px)translateX(7px);;
   }
 
   .wrapper .blurred-wrapper {
@@ -110,7 +110,22 @@
     filter: blur(6px);
     transform: skewX(-4deg) skewY(-10deg);
     /* transform: skewY(-2deg); Simulating directional movement */
+    
   }
+  .fixed-size {
+        width: 1000px; /* Set the width of the element */
+        height: auto; /* Set the height of the element */
+        /* background-color: lightblue; Just to make it visible */
+        margin: auto;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        /* transform: translate(-50%, -50%); */
+        top: 50%; /* Center vertically */
+        left: 50%; /* Center horizontally */
+        /* position: fixed */
+    }
+  
   </style>
 
   <!-- Google tag (gtag.js) -->
@@ -201,7 +216,7 @@
           </a>
         </div>
       </div>
-    </div>
+    </div>d
 
   </div>
 </nav> -->
@@ -212,17 +227,19 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <div class="title is-2 publication-title"><h1 style="display: inline-block; clear:none;">
+          <div class="title is-2 publication-title">
+            <h1 class="is-centered" style="display: inline-block;">
 
-            <span class="blur-effect-2">Blur</span>
-            <span style="color: white;"><b>Blur</b></span><span style="color: #4169E1; font-size: 1.5em;"><b>2</b></span><span style="color: white;"><b>Blur</b></span>
-            
-            <span class='wrapper'>
-              <div class='blurred-wrapper'>
-                <div class='blurred'>Blur
-            </div></div></span>
-          </h1>
-          <h1><b>Blur Conversion for Unsupervised Image Deblurring on Unknown Domains</b></h1>
+              <span class="blur-effect-2">Blur</span>
+              <span style="color: #4169E1; font-size: 1.5em;"><b>2</b></span>
+              
+              <span class='wrapper'>
+                <div class='blurred-wrapper'>
+                  <div class='blurred'>Blur
+              </div></div></span>
+            </h1>
+
+            <h1><b>Blur Conversion for Unsupervised Image Deblurring on Unknown Domains</b></h1>
           </div>
           <!-- <div class="is-size-5 publication-authors">
             <span class="author-block">This page is under reconstruction</span>
@@ -278,7 +295,7 @@
                 </a>
               </span> -->
               <span class="link-block">
-                <a href="https://drive.google.com/file/d/1kKv5agr9CaYcU7QQybA4gfjaIasnkl8K/view?usp=sharing" target="_blank" rel="noopener noreferrer"
+                <a href="https://arxiv.org/pdf/2403.16205.pdf" target="_blank" rel="noopener noreferrer"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-file-pdf" style="color: orangered"></i>
@@ -290,7 +307,7 @@
               
 
               <span class="link-block">
-                <a target="_blank" rel="noopener noreferrer" href="https://drive.google.com/file/d/1kKv5agr9CaYcU7QQybA4gfjaIasnkl8K/view?usp=sharing"
+                <a target="_blank" rel="noopener noreferrer" href="http://arxiv.org/abs/2403.16205"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="ai ai-arxiv"></i>
@@ -1068,7 +1085,7 @@ bulmaCarousel.attach('#results-carousel', {
         </div>
       </div>
       <div style="display:none; color:#dedede; font-size:.5em;">
-        <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=X6Yamx8jfOQCcH8DU6zsTpEnR8W9AMABmwewoSjJYVc"></script>
+        <!-- <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=X6Yamx8jfOQCcH8DU6zsTpEnR8W9AMABmwewoSjJYVc"></script> -->
       </div>
       
     </div>

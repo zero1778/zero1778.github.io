@@ -12,12 +12,13 @@ def resize_image_cv2(input_path, output_path, new_width, new_height):
 
 # Example usage
 root = "REDS/"
+root1 = "REDS_z/"
 for each in os.listdir(root):
     if "png" not in each: continue
     
     input_path = root + each
     output_path = root + each
-    new_width = 512
-    new_height = 512 
+    new_width = 300
+    new_height = 300 
 
     resize_image_cv2(input_path, output_path, new_width, new_height)

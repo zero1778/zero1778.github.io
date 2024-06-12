@@ -11,13 +11,15 @@ def resize_image_cv2(input_path, output_path, new_width, new_height):
     cv2.imwrite(output_path, resized_img)
 
 # Example usage
-root = "REDS/"
+root = "RSBlur/"
+root1 = "RSBlur_z/"
 for each in os.listdir(root):
-    if "png" not in each: continue
+    if "jpeg" not in each: continue
     
     input_path = root + each
-    output_path = root + each
-    new_width = 512
-    new_height = 512 
+    output_path = root1 + each
+    print(output_path)
+    new_width = 300
+    new_height = 300 
 
     resize_image_cv2(input_path, output_path, new_width, new_height)

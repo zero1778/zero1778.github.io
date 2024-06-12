@@ -377,7 +377,7 @@
       <!-- <h3 class="title is-3" style="text-align: center;">Abstract</h3> -->
       <!-- <div class="container"> -->
           <video autoplay loop muted style="margin-top: 0px; ">
-            <source src="img/Teaser_vid.mp4" type="video/mp4">
+            <source src="img/Teaser1.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         <!-- </div> -->
@@ -460,7 +460,7 @@ bulmaCarousel.attach('#results-carousel', {
   </div>
   <div class="container is-widescreen" style="margin-top: 10px;">
     <div style="text-align: center;">
-      <img src="img/Teaser.jpg"  style="width: 90%;"">
+      <img src="img/Teaser.jpg"  style="width: 100%;"">
     </div>
   </div>
 </section>
@@ -470,12 +470,14 @@ bulmaCarousel.attach('#results-carousel', {
 <section class="hero is-light is-small">
   <div class="hero-body">
     <div class="column has-text-centered">
-      <h2 class="title is-3"><span style="color: green;">One</span>-to-<span style="color: red;">Many</span></h2>
+      <!-- <h2 class="title is-3"><span style="color: green;">One</span>-to-<span style="color: red;">Many</span></h2> -->
+      <h2 class="title is-3">Robust to Different <span style="color: red;">Unknown Blur</span> Domains</h2>
     </div>
     <div class="container content has-text-centered" style="margin-bottom: 40px;">
       <!-- <div class="content has-text-justified"> -->
       <p>
-        Evaluating the deblurring performance of the <i>NAFNet</i><sup>[1]</sup> model, which was pretrained on the <a target="_blank" rel="noopener noreferrer" href="https://seungjunnah.github.io/Datasets/gopro.html"><u><i>GoPro</i></u></a> dataset (<span style="color: green; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Known Blur</b></span>), when applied to various  <span style="color: red; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Unknown Blur</b></span> datasets. 
+        <!-- Evaluating the deblurring performance of the <i>NAFNet</i><sup>[1]</sup> model, which was pretrained on the <a target="_blank" rel="noopener noreferrer" href="https://seungjunnah.github.io/Datasets/gopro.html"><u><i><b>GoPro</b></i></u></a> dataset (<span style="color: green; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Known Blur</b></span>), when applied to various  <span style="color: red; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Unknown Blur</b></span> datasets.  -->
+        Qualitative results when using deblurring model <i>NAFNet</i><sup>[1]</sup> - was pretrained on the <a target="_blank" rel="noopener noreferrer" href="https://seungjunnah.github.io/Datasets/gopro.html"><u><i><b>GoPro</b></i></u></a> dataset (<span style="color: green; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Known Blur</b></span>) for various  <span style="color: red; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Unknown Blur</b></span> datasets. 
         The <span style="color: black; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Blur</b></span> column shows original inputs and their Blur2Blur conversions.
         The <span style="color: black; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Deblurred</b></span> column displays the results of applying the pretrained model to both the original and the Blur2Blur-converted versions.
       </p>
@@ -531,7 +533,7 @@ bulmaCarousel.attach('#results-carousel', {
               <!-- <img loading="lazy" src="./qualitative/REDS/deblur1_1.jpeg"> -->
             </div>
             <div class="cmpcontent">
-              <img loading="lazy" src="./qualitative/REDS/deblur1_2.jpeg">
+              <img src="./qualitative/REDS/deblur1_2.jpeg">
             </div>
           </div>
           <p style="margin-top: -4px; font-size: 27px; font-weight: bold; margin-bottom: 7%; text-align: center; font-family: 'Google Sans', sans-serif;"> Deblurred </p>
@@ -842,13 +844,14 @@ bulmaCarousel.attach('#results-carousel', {
       <div class="columns is-full">
         <div class="column content has-text-centered">
             <h2 class="title is-3">
-              <span style="color: green;">Many</span>-to-<span style="color: red;">One</span>
+              <!-- <span style="color: green;">Many</span>-to-<span style="color: red;">One</span> -->
+              The <span style="color: green;">Known Blur</span> Selection
             </h2>
             <!-- <br> -->
             <div class="has-text-centered">
               <p>
-                To evaluate the <b><span style="color: green;">Many</span>-to-<span style="color: red;">One</span></b> setting, 
-                we aim to test a real-world scenario by using various existing <span style="color: green; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Known Blur</b></span> datasets along with our Blur2Blur model to deblur <span style="color: red; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Real Unknown Blur</b></span> images (using <i>NAFNet</i> pretrained deblurring model). 
+                <!-- To evaluate the <b><span style="color: green;">Many</span>-to-<span style="color: red;">One</span></b> setting,  -->
+                We aim to evaluate a real-world scenario by using different existing <span style="color: green; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Known Blur</b></span> datasets along with our Blur2Blur model to deblur <span style="color: red; font-family: 'Google Sans', sans-serif; font-size: 1.1em;"><b>Real Unknown Blur</b></span> images (using <i>NAFNet</i> pretrained deblurring model). 
                 These real images are captured by a <b>Samsung Galaxy Note 10 Plus</b>, forming the <b>PhoneCraft</b> dataset (more details are available in our paper).
               </p>
               <!-- <p><b>Samsung Galaxy S20</b>, an Android phone with a typical long rolling shutter readout time. Comparing Splatfacto with COLMAP poses to our method with rolling shutter compensated pose optimization and motion blur compensation.</p> -->

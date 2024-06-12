@@ -8,8 +8,8 @@ def convert_mov_to_mp4(mov_file_path, mp4_file_path):
     clip.write_videofile(mp4_file_path)
 
 # Example usage
-mov_file_path = 'Teaser_vid.mov'
-mp4_file_path = 'Teaser_vid.mp4'
+mov_file_path = 'test.mov'
+mp4_file_path = 'test.mp4'
 
 convert_mov_to_mp4(mov_file_path, mp4_file_path)
 

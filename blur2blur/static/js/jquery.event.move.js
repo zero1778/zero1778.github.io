@@ -105,45 +105,70 @@
 		return node[eventsSymbol] || (node[eventsSymbol] = {});
 	}
 
-	function on(node, types, fn, data, selector) {
-		types = types.split(rspaces);
+	// function on(node, types, fn, data, selector) {
+	// 	types = types.split(rspaces);
 
-		var events = getEvents(node);
-		var i = types.length;
-		var handlers, type;
+	// 	var events = getEvents(node);
+	// 	var i = types.length;
+	// 	var handlers, type;
 
-		function handler(e) { fn(e, data); }
+	// 	function handler(e) { fn(e, data); }
 
-		while (i--) {
-			type = types[i];
-			handlers = events[type] || (events[type] = []);
+	// 	while (i--) {
+	// 		type = types[i];
+	// 		handlers = events[type] || (events[type] = []);
+	// 		handlers.push([fn, handler]);
+	// 		node.addEventListener(type, handler);
+	// 	}
+	// }
+
+	// function off(node, types, fn, selector) {
+	// 	types = types.split(rspaces);
+
+	// 	var events = getEvents(node);
+	// 	var i = types.length;
+	// 	var type, handlers, k;
+
+	// 	if (!events) { return; }
+
+	// 	while (i--) {
+	// 		type = types[i];
+	// 		handlers = events[type];
+	// 		if (!handlers) { continue; }
+	// 		k = handlers.length;
+	// 		while (k--) {
+	// 			if (handlers[k][0] === fn) {
+	// 				node.removeEventListener(type, handlers[k][1]);
+	// 				handlers.splice(k, 1);
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+	function on(node, types, fn, data) {
+		types.split(rspaces).forEach(function(type) {
+			var events = getEvents(node);
+			var handlers = events[type] || (events[type] = []);
+			function handler(e) { fn(e, data); }
 			handlers.push([fn, handler]);
 			node.addEventListener(type, handler);
-		}
+		});
 	}
-
-	function off(node, types, fn, selector) {
-		types = types.split(rspaces);
-
-		var events = getEvents(node);
-		var i = types.length;
-		var type, handlers, k;
-
-		if (!events) { return; }
-
-		while (i--) {
-			type = types[i];
-			handlers = events[type];
-			if (!handlers) { continue; }
-			k = handlers.length;
-			while (k--) {
-				if (handlers[k][0] === fn) {
-					node.removeEventListener(type, handlers[k][1]);
-					handlers.splice(k, 1);
+	
+	function off(node, types, fn) {
+		types.split(rspaces).forEach(function(type) {
+			var events = getEvents(node);
+			if (!events[type]) return;
+			events[type] = events[type].filter(function(handler) {
+				if (handler[0] === fn) {
+					node.removeEventListener(type, handler[1]);
+					return false;
 				}
-			}
-		}
+				return true;
+			});
+		});
 	}
+	
 
 	function trigger(node, type, properties) {
 		// Don't cache events. It prevents you from triggering an event of a
@@ -156,49 +181,80 @@
 
 	// Constructors
 
-	function Timer(fn){
-		var callback = fn,
-		    active = false,
-		    running = false;
+	// function Timer(fn){
+	// 	var callback = fn,
+	// 	    active = false,
+	// 	    running = false;
 
-		function trigger(time) {
-			if (active){
+	// 	function trigger(time) {
+	// 		if (active){
+	// 			callback();
+	// 			requestFrame(trigger);
+	// 			running = true;
+	// 			active = false;
+	// 		}
+	// 		else {
+	// 			running = false;
+	// 		}
+	// 	}
+
+	// 	this.kick = function(fn) {
+	// 		active = true;
+	// 		if (!running) { trigger(); }
+	// 	};
+
+	// 	this.end = function(fn) {
+	// 		var cb = callback;
+
+	// 		if (!fn) { return; }
+
+	// 		// If the timer is not running, simply call the end callback.
+	// 		if (!running) {
+	// 			fn();
+	// 		}
+	// 		// If the timer is running, and has been kicked lately, then
+	// 		// queue up the current callback and the end callback, otherwise
+	// 		// just the end callback.
+	// 		else {
+	// 			callback = active ?
+	// 				function(){ cb(); fn(); } :
+	// 				fn ;
+
+	// 			active = true;
+	// 		}
+	// 	};
+	// }
+	function Timer(fn) {
+		var callback = fn, active = false, running = false;
+	
+		function trigger() {
+			if (active) {
 				callback();
 				requestFrame(trigger);
 				running = true;
 				active = false;
-			}
-			else {
+			} else {
 				running = false;
 			}
 		}
-
-		this.kick = function(fn) {
+	
+		this.kick = function() {
 			active = true;
 			if (!running) { trigger(); }
 		};
-
+	
 		this.end = function(fn) {
-			var cb = callback;
-
-			if (!fn) { return; }
-
-			// If the timer is not running, simply call the end callback.
+			if (!fn) return;
 			if (!running) {
 				fn();
-			}
-			// If the timer is running, and has been kicked lately, then
-			// queue up the current callback and the end callback, otherwise
-			// just the end callback.
-			else {
-				callback = active ?
-					function(){ cb(); fn(); } :
-					fn ;
-
+			} else {
+				var cb = callback;
+				callback = active ? function() { cb(); fn(); } : fn;
 				active = true;
 			}
 		};
 	}
+	
 
 
 	// Functions
@@ -333,42 +389,74 @@
 		triggerStart(e, data, touch, distX, distY, fn);
 	}
 
+	// function triggerStart(e, data, touch, distX, distY, fn) {
+	// 	var touches = e.targetTouches;
+	// 	var time = e.timeStamp - data.timeStamp;
+
+	// 	// Create a movestart object with some special properties that
+	// 	// are passed only to the movestart handlers.
+	// 	var template = {
+	// 		altKey:     e.altKey,
+	// 		ctrlKey:    e.ctrlKey,
+	// 		shiftKey:   e.shiftKey,
+	// 		startX:     data.pageX,
+	// 		startY:     data.pageY,
+	// 		distX:      distX,
+	// 		distY:      distY,
+	// 		deltaX:     distX,
+	// 		deltaY:     distY,
+	// 		pageX:      touch.pageX,
+	// 		pageY:      touch.pageY,
+	// 		velocityX:  distX / time,
+	// 		velocityY:  distY / time,
+	// 		identifier: data.identifier,
+	// 		targetTouches: touches,
+	// 		finger: touches ? touches.length : 1,
+	// 		enableMove: function() {
+	// 			this.moveEnabled = true;
+	// 			this.enableMove = noop;
+	// 			e.preventDefault();
+	// 		}
+	// 	};
+
+	// 	// Trigger the movestart event.
+	// 	trigger(data.target, 'movestart', template);
+
+	// 	// Unbind handlers that tracked the touch or mouse up till now.
+	// 	fn(data);
+	// }
+
 	function triggerStart(e, data, touch, distX, distY, fn) {
-		var touches = e.targetTouches;
-		var time = e.timeStamp - data.timeStamp;
-
-		// Create a movestart object with some special properties that
-		// are passed only to the movestart handlers.
-		var template = {
-			altKey:     e.altKey,
-			ctrlKey:    e.ctrlKey,
-			shiftKey:   e.shiftKey,
-			startX:     data.pageX,
-			startY:     data.pageY,
-			distX:      distX,
-			distY:      distY,
-			deltaX:     distX,
-			deltaY:     distY,
-			pageX:      touch.pageX,
-			pageY:      touch.pageY,
-			velocityX:  distX / time,
-			velocityY:  distY / time,
-			identifier: data.identifier,
-			targetTouches: touches,
-			finger: touches ? touches.length : 1,
-			enableMove: function() {
-				this.moveEnabled = true;
-				this.enableMove = noop;
-				e.preventDefault();
-			}
-		};
-
-		// Trigger the movestart event.
+		var touches = e.targetTouches,
+			time = e.timeStamp - data.timeStamp,
+			template = {
+				altKey: e.altKey,
+				ctrlKey: e.ctrlKey,
+				shiftKey: e.shiftKey,
+				startX: data.pageX,
+				startY: data.pageY,
+				distX: distX,
+				distY: distY,
+				deltaX: distX,
+				deltaY: distY,
+				pageX: touch.pageX,
+				pageY: touch.pageY,
+				velocityX: distX / time,
+				velocityY: distY / time,
+				identifier: data.identifier,
+				targetTouches: touches,
+				finger: touches ? touches.length : 1,
+				enableMove: function() {
+					this.moveEnabled = true;
+					this.enableMove = function() {};
+					e.preventDefault();
+				}
+			};
+	
 		trigger(data.target, 'movestart', template);
-
-		// Unbind handlers that tracked the touch or mouse up till now.
 		fn(data);
 	}
+	
 
 
 	// Handlers that control what happens following a movestart

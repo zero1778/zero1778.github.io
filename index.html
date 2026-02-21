@@ -75,6 +75,51 @@
                 <source src="images/blocknerf_after.mp4" type="video/mp4">
                 Your browser does not support the video tag.
                 </video></div>
+                <img src='bluref/teaser.jpg' width="160">
+              </div>
+              <script type="text/javascript">
+                function blocknerf_start() {
+                  document.getElementById('blocknerf_image').style.opacity = "1";
+                }
+
+                function blocknerf_stop() {
+                  document.getElementById('blocknerf_image').style.opacity = "0";
+                }
+                blocknerf_stop()
+              </script>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+							<a href="/bluref/">
+                <papertitle>BluRef: Unsupervised Image Deblurring with Dense-Matching References</papertitle>
+              </a>
+              <br>
+              <!-- <strong>Bang-Dang Pham</strong>,
+              <a href="https://scholar.google.com/citations?hl=en&authuser=1&user=-BPaFHcAAAAJ">Phong Tran</a>,
+              <a href="https://sites.google.com/site/anhttranusc/">Anh Tran</a>,
+              <a href="https://sites.google.com/view/cuongpham/home">Cuong Pham</a>,
+              <a href="https://rangnguyen.github.io/">Rang Nguyen</a>,
+              <a href="https://www3.cs.stonybrook.edu/~minhhoai/">Minh Hoai</a>
+              <br> -->
+        
+        <em>Preprint, 2025</em>
+              <br>
+              <!-- <a href="/blur2blur">project page</a> -->
+              <!-- <a href="http://arxiv.org/abs/2403.16205">arXiv</a> -->
+              <p> Introduces a novel <strong><em>unpaired reference based deblurring</em></strong>  framework for camera specific image restoration, 
+                eliminating the need for controlled data collection or paired supervision. 
+                The method leverages an <strong>iterative dense matching training strategy</strong> to construct high quality pseudo groundtruth, 
+                enabling robust generalization across diverse real world blur scenarios.</p>
+            </td>
+          </tr>
+
+
+          <tr onmouseout="blocknerf_stop()" onmouseover="blocknerf_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <div class="two" id='blocknerf_image'><video  width=100% height=100% muted autoplay loop>
+                <source src="images/blocknerf_after.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                </video></div>
                 <img src='data/B2B_Pipeline.jpg' width="160">
               </div>
               <script type="text/javascript">
@@ -101,6 +146,7 @@
               <a href="https://rangnguyen.github.io/">Rang Nguyen</a>,
               <a href="https://www3.cs.stonybrook.edu/~minhhoai/">Minh Hoai</a>
               <br>
+        
         <em>CVPR, 2024</em>
               <br>
               <a href="/blur2blur">project page</a>

@@ -75,16 +75,8 @@ nav::after {
   bottom: -1px;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #0f172a, #c41e3a, #7f1d1d, #c41e3a, #0f172a);
-  background-size: 300%;
-  animation: nav-shimmer 5s ease infinite;
-}
-
-@keyframes nav-shimmer {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  height: 1px;
+  background: #e2e8f0;
 }
 
 .nav-inner {
@@ -101,7 +93,10 @@ nav::after {
   font-weight: 500;
   font-family: 'Pacifico', cursive;
   letter-spacing: 0.1px;
-  color: var(--text);
+  background: linear-gradient(90deg, #0f172a, #c41e3a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .type-cursor {

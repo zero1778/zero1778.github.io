@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BluRef — Motivation Video</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    width: 1920px;
+    height: 1080px;
+  }
+
+  .video-container {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+
+  /* ============ SCENES ============ */
+  .scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+  }
+  .scene.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ============ SCENE 1: Blurry moments ============ */
+  #scene1 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  }
+  #scene1 .text-block {
+    text-align: center;
+    max-width: 1400px;
+    padding: 0 80px;
+  }
+  #scene1 .big-text {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.15;
+    opacity: 0;
+    transform: translateY(40px);
+    letter-spacing: -1px;
+  }
+  #scene1 .big-text .highlight {
+    background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  #scene1 .sub-text {
+    font-size: 30px;
+    font-weight: 300;
+    color: #aaa;
+    margin-top: 30px;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* ============ SCENE 2: Teaser image ============ */
+  #scene2 {
+    background: #000;
+    flex-direction: column;
+    gap: 30px;
+  }
+  #scene2 .scene-title {
+    font-size: 36px;
+    font-weight: 600;
+    color: #ccc;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  #scene2 .scene-title .accent { color: #4ecdc4; }
+  #scene2 .teaser-img {
+    max-width: 1600px;
+    width: 85%;
+    border-radius: 12px;
+    opacity: 0;
+    transform: scale(0.95);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #scene2 .caption {
+    font-size: 24px;
+    color: #888;
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* ============ SCENE 3: The cost of supervised ============ */
+  #scene3 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1020 100%);
+  }
+  #scene3 .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    max-width: 1600px;
+    padding: 0 80px;
+    align-items: center;
+  }
+  #scene3 .left-col { text-align: left; }
+  #scene3 .section-label {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #e74c3c;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  #scene3 .title {
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  #scene3 .title .red { color: #e74c3c; }
+  #scene3 .desc {
+    font-size: 24px;
+    font-weight: 300;
+    color: #bbb;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  #scene3 .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .cost-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  .cost-card .icon {
+    font-size: 44px;
+    flex-shrink: 0;
+    width: 70px;
+    text-align: center;
+  }
+  .cost-card .label {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .cost-card .detail {
+    font-size: 17px;
+    color: #999;
+    font-weight: 300;
+  }
+  .cost-card.red-border { border-color: rgba(231,76,60,0.4); }
+
+  /* ============ SCENE 4: Imperfect GT ============ */
+  #scene4 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #0f1a20 100%);
+    flex-direction: column;
+    gap: 40px;
+  }
+  #scene4 .section-label {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #f39c12;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  #scene4 .title {
+    font-size: 56px;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.2;
+    opacity: 0;
+    transform: translateY(30px);
+    max-width: 1300px;
+  }
+  #scene4 .title .gold { color: #f39c12; }
+  #scene4 .insight-box {
+    background: rgba(243,156,18,0.08);
+    border: 1px solid rgba(243,156,18,0.3);
+    border-radius: 16px;
+    padding: 36px 50px;
+    max-width: 1200px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  #scene4 .insight-box p {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #ddd;
+  }
+  #scene4 .insight-box .em { color: #f39c12; font-weight: 600; }
+
+  /* ============ SCENE 5: The question ============ */
+  #scene5 {
+    background: #000;
+    flex-direction: column;
+    gap: 0;
+  }
+  #scene5 .question {
+    font-size: 52px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.35;
+    max-width: 1300px;
+    padding: 0 80px;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  #scene5 .question .cyan { color: #4ecdc4; }
+
+  /* ============ SCENE 6: Stats reveal ============ */
+  #scene6 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #0a1a15 100%);
+    flex-direction: column;
+    gap: 50px;
+  }
+  #scene6 .answer-label {
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #4ecdc4;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .stats-row {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+  }
+  .stat-block {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .stat-block .number {
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-block .number.green { color: #4ecdc4; }
+  .stat-block .number.gold { color: #f39c12; }
+  .stat-block .number.pink { color: #ff6b9d; }
+  .stat-block .unit {
+    font-size: 24px;
+    color: #888;
+    font-weight: 300;
+  }
+  .stat-block .label {
+    font-size: 18px;
+    color: #666;
+    margin-top: 8px;
+    font-weight: 400;
+  }
+  #scene6 .punchline {
+    font-size: 30px;
+    font-weight: 500;
+    color: #ccc;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    max-width: 1000px;
+  }
+  #scene6 .punchline .bold { color: #fff; font-weight: 700; }
+
+  /* ============ SCENE 7: Logo close ============ */
+  #scene7 {
+    background: #000;
+    flex-direction: column;
+    gap: 30px;
+  }
+  #scene7 .logo-img {
+    height: 100px;
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  #scene7 .paper-title {
+    font-size: 28px;
+    font-weight: 400;
+    color: #aaa;
+    text-align: center;
+    max-width: 1000px;
+    opacity: 0;
+    transform: translateY(20px);
+    line-height: 1.5;
+  }
+  #scene7 .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: #000;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 12px 36px;
+    border-radius: 30px;
+    letter-spacing: 2px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  #scene7 .url {
+    font-size: 20px;
+    color: #666;
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* ============ PROGRESS BAR ============ */
+  .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4ecdc4, #44a08d);
+    width: 0%;
+    transition: width 0.3s linear;
+    z-index: 100;
+  }
+
+  /* ============ CONTROLS ============ */
+  .controls {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    display: flex;
+    gap: 12px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .video-container:hover .controls { opacity: 1; }
+  .ctrl-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.2); }
+
+  /* ============ ANIMATION HELPER ============ */
+  .anim-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .anim-in-slow {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+</style>
+</head>
+<body>
+<div class="video-container" id="vc">
+
+  <!-- SCENE 1: Opening hook -->
+  <div class="scene active" id="scene1">
+    <div class="text-block">
+      <div class="big-text" id="s1-title">
+        Billions of photos captured daily.<br>
+        Countless ruined by <span class="highlight">motion blur</span>.
+      </div>
+      <div class="sub-text" id="s1-sub">
+        A child's first steps. A once-in-a-lifetime moment. Gone.
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 2: AI can fix this -->
+  <div class="scene" id="scene2">
+    <div class="scene-title" id="s2-title">
+      Deep learning can <span class="accent">reverse motion blur</span> — but at what cost?
+    </div>
+    <img src="img/teaser7_lucky.png" class="teaser-img" id="s2-img" alt="Deblurring example">
+    <div class="caption" id="s2-cap">Blurry input → AI-restored sharp output</div>
+  </div>
+
+  <!-- SCENE 3: The hidden cost -->
+  <div class="scene" id="scene3">
+    <div class="content-grid">
+      <div class="left-col">
+        <div class="section-label" id="s3-label">The Hidden Cost</div>
+        <div class="title" id="s3-title">Training requires<br><span class="red">paired data</span></div>
+        <div class="desc" id="s3-desc">
+          Every supervised deblurring model needs perfectly aligned blurry–sharp image pairs — captured with specialized hardware.
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="cost-card red-border" id="s3-c1">
+          <div class="icon">📷</div>
+          <div>
+            <div class="label">Expensive Rigs</div>
+            <div class="detail">Multi-camera systems with precise synchronization</div>
+          </div>
+        </div>
+        <div class="cost-card red-border" id="s3-c2">
+          <div class="icon">⏱️</div>
+          <div>
+            <div class="label">Imperfect Alignment</div>
+            <div class="detail">Even high-speed capture leaves residual blur in "ground truth"</div>
+          </div>
+        </div>
+        <div class="cost-card red-border" id="s3-c3">
+          <div class="icon">🔬</div>
+          <div>
+            <div class="label">Lab ≠ Real World</div>
+            <div class="detail">Controlled datasets fail to represent diverse real conditions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: The deeper problem -->
+  <div class="scene" id="scene4">
+    <div class="section-label" id="s4-label">The Deeper Problem</div>
+    <div class="title" id="s4-title">
+      Supervised models are limited by<br><span class="gold">imperfect ground truth</span>
+    </div>
+    <div class="insight-box" id="s4-box">
+      <p>
+        Even the "sharp" frames in paired datasets contain <span class="em">residual blur</span> from hardware limitations.
+        Models trained on imperfect targets <span class="em">inherit those imperfections</span> — creating
+        a ceiling that better architectures alone cannot break.
+      </p>
+    </div>
+  </div>
+
+  <!-- SCENE 5: The question -->
+  <div class="scene" id="scene5">
+    <div class="question" id="s5-q">
+      What if we could train deblurring models<br>
+      with <span class="cyan">zero paired data</span> —<br>
+      and still <span class="cyan">surpass supervised methods</span>?
+    </div>
+  </div>
+
+  <!-- SCENE 6: Results -->
+  <div class="scene" id="scene6">
+    <div class="answer-label" id="s6-label">BluRef makes this possible</div>
+    <div class="stats-row">
+      <div class="stat-block" id="s6-s1">
+        <div class="number green">27.87</div>
+        <div class="unit">dB PSNR on RB2V</div>
+        <div class="label">vs. Supervised 27.43 dB</div>
+      </div>
+      <div class="stat-block" id="s6-s2">
+        <div class="number gold">33.30</div>
+        <div class="unit">dB PSNR on GoPro</div>
+        <div class="label">Surpasses supervised SOTA</div>
+      </div>
+      <div class="stat-block" id="s6-s3">
+        <div class="number pink">0</div>
+        <div class="unit">paired training images</div>
+        <div class="label">Fully unsupervised</div>
+      </div>
+    </div>
+    <div class="punchline" id="s6-punch">
+      The first unsupervised framework to <span class="bold">surpass supervised methods</span><br>on real-world video deblurring.
+    </div>
+  </div>
+
+  <!-- SCENE 7: Logo -->
+  <div class="scene" id="scene7">
+    <img src="img/logo/bluref.png" class="logo-img" id="s7-logo" alt="BluRef">
+    <div class="paper-title" id="s7-title">
+      Unsupervised Image Deblurring<br>with Dense-Matching References
+    </div>
+    <div class="badge" id="s7-badge">CVPR 2026</div>
+    <div class="url" id="s7-url">arxiv.org/abs/2603.14176</div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-bar" id="progress"></div>
+
+  <!-- Controls (visible on hover) -->
+  <div class="controls">
+    <button class="ctrl-btn" onclick="restart()">⟲ Restart</button>
+    <button class="ctrl-btn" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+  </div>
+</div>
+
+<script>
+const TIMELINE = [
+  // [time_ms, action]
+  // Scene 1
+  [   0,   () => showScene('scene1')],
+  [ 400,   () => animIn('s1-title')],
+  [1200,   () => animIn('s1-sub')],
+
+  // Scene 2
+  [5000,   () => showScene('scene2')],
+  [5500,   () => animIn('s2-title')],
+  [6200,   () => animIn('s2-img', 'anim-in-slow')],
+  [7000,   () => animIn('s2-cap')],
+
+  // Scene 3
+  [11000,  () => showScene('scene3')],
+  [11400,  () => animIn('s3-label')],
+  [11800,  () => animIn('s3-title')],
+  [12400,  () => animIn('s3-desc')],
+  [13000,  () => animIn('s3-c1')],
+  [13600,  () => animIn('s3-c2')],
+  [14200,  () => animIn('s3-c3')],
+
+  // Scene 4
+  [19000,  () => showScene('scene4')],
+  [19400,  () => animIn('s4-label')],
+  [19900,  () => animIn('s4-title')],
+  [20800,  () => animIn('s4-box')],
+
+  // Scene 5
+  [26000,  () => showScene('scene5')],
+  [26600,  () => animIn('s5-q', 'anim-in-slow')],
+
+  // Scene 6
+  [32000,  () => showScene('scene6')],
+  [32400,  () => animIn('s6-label')],
+  [33000,  () => animIn('s6-s1')],
+  [33500,  () => animIn('s6-s2')],
+  [34000,  () => animIn('s6-s3')],
+  [35500,  () => animIn('s6-punch')],
+
+  // Scene 7
+  [41000,  () => showScene('scene7')],
+  [41400,  () => animIn('s7-logo', 'anim-in-slow')],
+  [42200,  () => animIn('s7-title')],
+  [42800,  () => animIn('s7-badge')],
+  [43400,  () => animIn('s7-url')],
+];
+
+const TOTAL_DURATION = 48000;
+let startTime = 0;
+let pausedAt = 0;
+let paused = false;
+let executed = new Set();
+let rafId = null;
+
+function animIn(id, cls = 'anim-in') {
+  const el = document.getElementById(id);
+  if (el) el.classList.add(cls);
+}
+
+function showScene(id) {
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  const scene = document.getElementById(id);
+  scene.classList.add('active');
+  // Reset animations of this scene's children
+  scene.querySelectorAll('.anim-in, .anim-in-slow').forEach(el => {
+    el.classList.remove('anim-in', 'anim-in-slow');
+  });
+}
+
+function tick(now) {
+  if (paused) return;
+  const elapsed = now - startTime;
+  const progress = Math.min(elapsed / TOTAL_DURATION, 1);
+  document.getElementById('progress').style.width = (progress * 100) + '%';
+
+  TIMELINE.forEach(([time, action], i) => {
+    if (elapsed >= time && !executed.has(i)) {
+      executed.add(i);
+      action();
+    }
+  });
+
+  if (progress < 1) {
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+function start() {
+  executed.clear();
+  startTime = performance.now();
+  // Reset all scenes
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.anim-in, .anim-in-slow').forEach(el => {
+    el.classList.remove('anim-in', 'anim-in-slow');
+  });
+  document.getElementById('progress').style.width = '0%';
+  paused = false;
+  document.getElementById('pauseBtn').textContent = '⏸ Pause';
+  rafId = requestAnimationFrame(tick);
+}
+
+function restart() {
+  if (rafId) cancelAnimationFrame(rafId);
+  start();
+}
+
+function togglePause() {
+  if (paused) {
+    // Resume
+    paused = false;
+    startTime = performance.now() - pausedAt;
+    document.getElementById('pauseBtn').textContent = '⏸ Pause';
+    rafId = requestAnimationFrame(tick);
+  } else {
+    paused = true;
+    pausedAt = performance.now() - startTime;
+    document.getElementById('pauseBtn').textContent = '▶ Play';
+    if (rafId) cancelAnimationFrame(rafId);
+  }
+}
+
+// Auto-start
+start();
+</script>
+</body>
+</html>

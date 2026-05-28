@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="BluRef: Unsupervised Image Deblurring with Dense-Matching References — CVPR 2026">
+  <meta name="keywords" content="BluRef, Unsupervised Deblurring, Dense Matching, Reference-based, CVPR 2026">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:description" content="BluRef: Unsupervised Image Deblurring with Dense-Matching References — CVPR 2026" />
+  <title>BluRef</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="img/logo/logo.png" type="image/png" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+<style>
+/* ══════════ RESET & BASE ══════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background: #ffffff;
+  color: #333;
+  margin: 0;
+  overflow-x: hidden;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+h1,h2,h3,h4 { font-family: 'Google Sans', sans-serif; margin: 0; }
+
+/* ══════════ HERO ══════════ */
+.hero-section {
+  padding: 72px 20px 18px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #f0f4ff 0%, #ffffff 55%, #ffffff 100%);
+  z-index: 0;
+}
+.hero-section > * { position: relative; z-index: 1; }
+
+.conf-badge {
+  display: inline-block;
+  background: #346dc2;
+  color: #fff;
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 6px 20px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(52,109,194,0.16);
+  border-radius: 30px;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* .paper-title {
+  font-family: 'Google Sans', sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 6px;
+} */
+.paper-title {
+  font-family: 'Google Sans', sans-serif;
+  font-size: clamp(3.2rem, 6.8vw, 5.4rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
+.title-logo {
+  height: clamp(5rem, 10vw, 8.6rem);
+  width: auto;
+  display: inline-block;
+}
+@media (max-width: 700px) {
+  .paper-title {
+    white-space: normal;
+    font-size: clamp(2.5rem, 10vw, 3.6rem);
+    line-height: 1.02;
+  }
+
+  .title-logo {
+    height: clamp(3.6rem, 13vw, 6rem);
+  }
+}
+.t-blu { color: #2563eb; }
+.t-ref { color: #e05a1e; }
+
+/* .paper-subtitle {
+  font-family: 'Google Sans', sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-weight: 400;
+  color: #555;
+  max-width: 640px;
+  margin: 0 auto 16px;
+  line-height: 1.45;
+} */
+.paper-subtitle {
+  font-family: 'Google Sans', sans-serif;
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  color: #666;
+  max-width: none;
+  margin: 0 auto 20px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .paper-subtitle {
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+
+.authors-line {
+  font-family: 'Google Sans', sans-serif;
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  color: #444;
+  margin-bottom: 12px;
+}
+.authors-line a { color: hsl(204, 86%, 53%); font-weight: 600; text-decoration: none; }
+.authors-line a:hover { text-decoration: underline; }
+sup { font-size: 0.65em; }
+
+.inst-logos {
+  display: flex; align-items: center; justify-content: center;
+  gap: 28px; flex-wrap: wrap; margin: 18px 0 20px;
+}
+.inst-logo { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.inst-logo img { height: 48px; width: auto; object-fit: contain; }
+.inst-label { 
+  font-size: 0.70rem; 
+  color: #555; 
+  font-weight: 600;
+  letter-spacing: 0.3px; 
+  text-align: center; 
+  max-width: 140px; 
+}
+.inst-sep { width: 1px; height: 44px; background: #ddd; }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 8px; }
+.link-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px; border-radius: 30px;
+  font-size: 0.88rem; font-weight: 600;
+  font-family: 'Google Sans', sans-serif;
+  text-decoration: none; transition: all 0.2s; border: 1.5px solid;
+}
+.link-btn-primary { background: #346dc2; border-color: #346dc2; color: #fff; }
+.link-btn-primary:hover { background: #2a5ba3; transform: translateY(-2px); }
+.link-btn-outline { background: transparent; border-color: #ccc; color: #555; }
+.link-btn-outline:hover { background: #f5f7fa; border-color: #999; transform: translateY(-2px); }
+
+.teaser-video {
+  margin: 20px auto 0;
+  max-width: 700px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.teaser-video video {
+  width: 100%;
+  display: block;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+.tldr-box {
+  margin: 24px auto 0; max-width: 740px;
+  background: #f0f4ff; border: 1px solid #d0daf0;
+  border-radius: 14px; padding: 16px 24px;
+  font-size: 0.94rem; color: #444; line-height: 1.7; text-align: left;
+}
+.tldr-box strong { color: #2563eb; }
+.em-blue { color: #2563eb; font-style: normal; font-weight: 600; }
+
+/* ══════════ HIGHLIGHT BANNER ══════════ */
+.highlight-banner {
+  width: calc(100% + 40px);
+  margin: 28px -20px 0;
+  background: linear-gradient(135deg, #f0f4ff, #e8ecff);
+  border-top: 1px solid #c8d4f0;
+  border-bottom: 1px solid #c8d4f0;
+  border-radius: 0;
+  padding: 28px 32px;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.highlight-stat { text-align: center; min-width: 140px; }
+.highlight-stat .val {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 2.2rem; font-weight: 800; color: #2563eb; line-height: 1;
+}
+.highlight-stat .val.gold { color: #d97706; }
+.highlight-stat .val.green { color: #059669; }
+.highlight-stat .val.pair-val {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.08em;
+}
+
+.highlight-stat .val .sep {
+  margin: 0 0.06em;
+}
+.highlight-stat .desc { font-size: 0.78rem; color: #666; margin-top: 6px; line-height: 1.3; }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-top: 4px; }
+.chip-blue { background: rgba(37,99,235,0.1); color: #2563eb; }
+.chip-amber { background: rgba(217,119,6,0.1); color: #d97706; }
+.chip-green { background: rgba(5,150,105,0.1); color: #059669; }
+
+/* ══════════ STICKY NAV ══════════ */
+.snav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid #e5e7eb;
+}
+.snav-inner { max-width: 960px; margin: 0 auto; display: flex; overflow-x: auto; }
+.snav a {
+  color: #888; font-family: 'Google Sans', sans-serif;
+  font-size: 0.82rem; font-weight: 600;
+  padding: 13px 15px; text-decoration: none;
+  transition: color 0.2s; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.snav a:hover { color: #346dc2; }
+.snav a.active { color: #346dc2; border-bottom-color: #346dc2; }
+
+/* ══════════ SECTIONS ══════════ */
+.sec { position: relative; }
+.sec-inner { max-width: 920px; margin: 0 auto; padding: 56px 20px; }
+.sec-inner.wide { max-width: 1080px; }
+.sec-alt { background: #f7f9fc; }
+
+.sec-tag {
+  font-size: 0.73rem; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: #346dc2; margin-bottom: 6px;
+  font-family: 'Google Sans', sans-serif;
+}
+.sec-h { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; color: #222; margin-bottom: 20px; }
+.sec-body { font-size: 1.0rem; color: #555; line-height: 1.75; }
+.sec-body em { color: #2563eb; font-style: normal; font-weight: 600; }
+.sec-body strong { color: #333; }
+
+.divider { height: 1px; background: linear-gradient(90deg, transparent, #d0d7e0, transparent); max-width: 920px; margin: 0 auto; }
+
+/* ══════════ FIGURES ══════════ */
+.fig {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; overflow: hidden; margin: 24px 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.fig img { width: 100%; display: block; }
+.fig-cap {
+  font-size: 0.82rem; color: #777; padding: 12px 18px;
+  line-height: 1.6; border-top: 1px solid #eee; background: #fafbfc;
+}
+.fig-cap strong { color: #333; }
+.fig-clean {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  max-width: 1400px;
+  margin: 24px auto;
+}
+
+/* smaller size specifically for protocol figure */
+.fig-clean.protocol-small {
+  max-width: 900px;
+}
+.fig-clean img {
+  width: 100%;
+  display: block;
+}
+.fig-clean .fig-cap {
+  background: transparent;
+  border-top: none;
+  padding-top: 10px;
+  text-align: center;
+}
+
+/* ══════════ ABSTRACT BOX ══════════ */
+.abst-box {
+  background: #f0f4ff; border: 1px solid #d0daf0;
+  border-radius: 14px; padding: 28px 30px;
+  font-size: 1.02rem; line-height: 1.8; color: #444;
+}
+
+/* ══════════ CONTRIBUTION CARDS ══════════ */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+@media (max-width: 760px) {
+  .cards { grid-template-columns: 1fr; }
+}
+.card {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 14px; padding: 22px 20px;
+  transition: all 0.25s; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.card:hover { border-color: #346dc2; box-shadow: 0 6px 24px rgba(52,109,194,0.1); transform: translateY(-3px); }
+.card-ico { font-size: 1.8rem; margin-bottom: 10px; }
+.card h4 { font-size: 0.94rem; font-weight: 700; color: #222; margin-bottom: 7px; }
+.card p  { font-size: 0.84rem; color: #666; line-height: 1.6; margin: 0; }
+
+/* ══════════ PIPELINE STEPS ══════════ */
+.steps { display: flex; flex-direction: column; gap: 14px; margin: 24px 0; }
+.step {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; padding: 16px 18px;
+  transition: border-color 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+.step:hover { border-color: #346dc2; }
+.step-n {
+  flex-shrink: 0; width: 32px; height: 32px; background: #346dc2;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.85rem; color: #fff; font-family: 'Google Sans', sans-serif;
+}
+.step h4 { margin: 0 0 4px; font-size: 0.92rem; color: #222; }
+.step p  { margin: 0; font-size: 0.84rem; color: #666; line-height: 1.55; }
+
+/* ══════════ STRATEGIES ══════════ */
+.strat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; margin: 20px 0; }
+.strat {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; padding: 16px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+.strat-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.strat-avg  .strat-tag { color: #2563eb; }
+.strat-seq  .strat-tag { color: #7c3aed; }
+.strat-prog .strat-tag { color: #059669; }
+.strat h4 { font-size: 0.88rem; font-weight: 700; color: #222; margin-bottom: 5px; }
+.strat p  { font-size: 0.82rem; color: #666; line-height: 1.55; margin: 0; }
+
+/* ══════════ QUANT TABLE ══════════ */
+.qtab-wrap {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; overflow: hidden; margin: 20px 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.qtab-wrap .qtab-header {
+  padding: 14px 20px; background: #f7f9fc;
+  border-bottom: 1px solid #e5e7eb;
+}
+.qtab-wrap .qtab-header h4 {
+  font-size: 0.85rem; font-weight: 700; color: #222; margin: 0;
+}
+.qtab-wrap .qtab-header p {
+  font-size: 0.78rem; color: #888; margin: 4px 0 0;
+}
+.qtab {
+  width: 100%; border-collapse: collapse; font-size: 0.82rem;
+}
+.qtab th {
+  background: #f0f4ff; color: #555; padding: 8px 10px;
+  text-align: center; font-weight: 600; font-size: 0.78rem;
+  border-bottom: 2px solid #d0daf0;
+}
+.qtab th:first-child { text-align: left; padding-left: 16px; }
+.qtab td {
+  padding: 7px 10px; text-align: center;
+  border-bottom: 1px solid #f0f2f5; color: #555;
+}
+.qtab tr:hover td { background: #f7f9ff; }
+.qtab .sh td {
+  background: #f0f4ff; color: #346dc2;
+  font-weight: 700; text-align: left; font-size: 0.76rem;
+  letter-spacing: 1px; text-transform: uppercase; padding-left: 12px;
+}
+.qtab .ours td { background: rgba(52,109,194,0.03); }
+.qtab .best { color: #b91c1c; font-weight: 700; }
+.qtab .sec-best { color: #2563eb; text-decoration: underline; }
+.qtab .upper td { color: #999; font-style: italic; }
+.qtab-note {
+  font-size: 0.76rem; color: #888; padding: 10px 16px;
+  border-top: 1px solid #eee; background: #fafbfc;
+}
+
+/* ══════════ SIDE-BY-SIDE LAYOUT ══════════ */
+.side-by-side {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  margin: 20px 0; align-items: start;
+}
+@media(max-width:760px){ .side-by-side { grid-template-columns: 1fr; } }
+
+/* ══════════ QUESTION BOX ══════════ */
+.question-box {
+  background: #fffbeb; border: 1px solid #fde68a;
+  border-radius: 12px; padding: 16px 20px; margin: 24px 0;
+}
+.question-box .q-icon { font-size: 1.2rem; margin-right: 8px; }
+.question-box .q-text {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; color: #92400e;
+}
+
+/* ══════════ MINI STAT TABLE ══════════ */
+.mini-stat-table {
+  width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 12px;
+}
+.mini-stat-table th {
+  background: #f0f4ff; padding: 7px 10px;
+  font-weight: 600; color: #555; text-align: center;
+  border-bottom: 2px solid #d0daf0; font-size: 0.78rem;
+}
+.mini-stat-table td {
+  padding: 7px 10px; text-align: center;
+  border-bottom: 1px solid #f0f2f5; color: #555;
+}
+.mini-stat-table .low { color: #dc2626; font-weight: 600; }
+
+/* ══════════ PRACTICALITY CARDS ══════════ */
+.prac-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; margin: 20px 0; }
+.prac-card {
+  background: #f0fdf4; border: 1px solid #bbf7d0;
+  border-radius: 12px; padding: 16px 16px;
+}
+.prac-card h4 { font-size: 0.88rem; font-weight: 700; color: #166534; margin-bottom: 5px; }
+.prac-card p  { font-size: 0.82rem; color: #555; line-height: 1.55; margin: 0; }
+
+/* ══════════ TABLE FIGURES ══════════ */
+.table-fig {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.table-fig img { width: 100%; display: block; padding: 16px; }
+.table-fig-cap {
+  font-size: 0.82rem; color: #777; padding: 10px 18px;
+  line-height: 1.5; border-top: 1px solid #eee; background: #fafbfc;
+}
+.table-fig-cap strong { color: #333; }
+
+/* ══════════ DATASET PROTOCOL CARDS ══════════ */
+.proto-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 16px; margin: 20px 0; }
+.proto-card {
+  background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; padding: 18px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+.proto-card h4 { font-size: 0.9rem; font-weight: 700; color: #222; margin-bottom: 6px; }
+.proto-card .proto-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 6px; display: inline-block; padding: 2px 8px; border-radius: 4px;
+}
+.proto-tag-syn { background: #eff6ff; color: #2563eb; }
+.proto-tag-real { background: #fef2f2; color: #dc2626; }
+.proto-tag-wild { background: #f0fdf4; color: #059669; }
+.proto-card p { font-size: 0.82rem; color: #666; line-height: 1.55; margin: 0; }
+
+/* ══════════ INTERACTIVE METHOD FIGURE ══════════ */
+.method-interactive {
+  margin: 24px 0;
+}
+
+.method-fig-container {
+  border-radius: 0;
+  overflow: visible;
+  border: none;
+  background: transparent;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.method-fig-container img {
+  width: 100%;
+  display: block;
+  transition: opacity 0.25s ease;
+}
+.method-fig-label {
+  background: transparent;
+  border-top: none;
+  color: #222;
+  padding: 12px 16px 2px;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 1.0rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.method-hint {
+  font-size: 0.9rem;
+  color: #346dc2;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.method-hint .hint-icon {
+  font-size: 0.9rem;
+}
+
+.method-steps-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+  align-items: stretch;
+}
+@media(max-width:900px){ .method-steps-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width:560px){ .method-steps-row { grid-template-columns: 1fr; } }
+
+.m-step {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+  height: 100%;
+}
+.m-step:hover, .m-step.active {
+  border-color: #346dc2;
+  background: #f0f4ff;
+  box-shadow: 0 4px 16px rgba(52,109,194,0.1);
+}
+.m-step-head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.m-step .step-n {
+  flex-shrink: 0; width: 28px; height: 28px;
+  background: #e5e7eb; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.8rem; color: #888;
+  font-family: 'Google Sans', sans-serif;
+  transition: all 0.25s;
+}
+.m-step:hover .step-n, .m-step.active .step-n {
+  background: #346dc2; color: #fff;
+}
+.m-step h4 { margin: 0; font-size: 0.85rem; color: #222; }
+.m-step p  { margin: 0; font-size: 0.78rem; color: #666; line-height: 1.5; }
+.m-step .step-detail {
+  font-size: 0.76rem; color: #999; margin-top: 4px; line-height: 1.45;
+  max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin 0.3s ease;
+}
+.m-step:hover .step-detail, .m-step.active .step-detail {
+  max-height: 150px; margin-top: 6px;
+}
+
+/* ══════════ INSIGHT CALLOUT ══════════ */
+.insight-box {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #2563eb;
+  border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 20px 0;
+}
+.insight-box .insight-title {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.88rem; font-weight: 700; color: #1e40af; margin-bottom: 6px;
+}
+.insight-box p { font-size: 0.84rem; color: #555; line-height: 1.6; margin: 0; }
+
+/* ══════════ SURPASS BOX ══════════ */
+.surpass-box {
+  background: linear-gradient(135deg, #fef3c7, #fffbeb);
+  border: 1px solid #fde68a; border-radius: 14px;
+  padding: 24px 28px; margin: 24px 0;
+}
+.surpass-box h3 {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 1.05rem; font-weight: 700; color: #92400e; margin-bottom: 10px;
+}
+.surpass-box p { font-size: 0.88rem; color: #555; line-height: 1.7; margin: 0 0 10px; }
+.surpass-box .surpass-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #2563eb; font-weight: 600; font-size: 0.85rem;
+  text-decoration: none; transition: color 0.2s;
+}
+.surpass-box .surpass-link:hover { color: #1d4ed8; text-decoration: underline; }
+
+/* ══════════ SCROLL REVEAL ══════════ */
+.rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.rev.vis { opacity: 1; transform: translateY(0); }
+
+/* ══════════ BIBTEX ══════════ */
+pre.bib {
+  background: #f5f7fa; border: 1px solid #e0e4ea;
+  border-radius: 12px; padding: 20px 22px;
+  font-size: 0.83rem; color: #555; overflow-x: auto; line-height: 1.75;
+}
+
+/* ══════════ POSTER ══════════ */
+.poster-frame {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.poster-embed {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+  background: #f7f9fc;
+}
+.poster-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  color: #777;
+  background: #f7f9fc;
+}
+.poster-fallback i {
+  font-size: 3rem;
+  color: #346dc2;
+  margin-bottom: 14px;
+}
+.poster-fallback p {
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 420px;
+  line-height: 1.5;
+}
+@media (max-width: 700px) {
+  .poster-frame { aspect-ratio: 3 / 4; }
+}
+
+/* ══════════ FOOTER ══════════ */
+.site-footer {
+  background: #f7f9fc; border-top: 1px solid #e5e7eb;
+  padding: 24px 20px; text-align: center; font-size: 0.82rem; color: #999;
+}
+.site-footer a { color: #346dc2; text-decoration: none; }
+.footer-icons { display: flex; gap: 16px; justify-content: center; margin-bottom: 10px; }
+.footer-icons a { color: #999; font-size: 1.2rem; transition: color 0.2s; }
+.footer-icons a:hover { color: #346dc2; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO SECTION
+     ══════════════════════════════════════════════════════════ -->
+<section class="hero-section" id="top">
+
+  <div class="conf-badge">★ CVPR 2026 (Main Conference)</div>
+
+  <!-- <h1 class="paper-title">
+    <span class="t-blu">Blu</span><span class="t-ref">Ref</span>
+  </h1> -->
+  <h1 class="paper-title">
+    <img src="img/logo/bluref.png" alt="BluRef" class="title-logo">
+  </h1>
+  <p class="paper-subtitle">
+    Unsupervised Image Deblurring with Dense-Matching References
+  </p>
+
+  <p class="authors-line">
+    <a href="https://zero1778.github.io" target="_blank">Bang-Dang Pham</a><sup>1†</sup>
+    &nbsp;&middot;&nbsp;
+    <a href="https://scholar.google.com/citations?user=FYZ5ODQAAAAJ" target="_blank">Anh Tran</a><sup>2</sup>
+    &nbsp;&middot;&nbsp;
+    <a href="https://sites.google.com/view/cuongpham/home" target="_blank">Cuong Pham</a><sup>2,3</sup>
+    &nbsp;&middot;&nbsp;
+    <a href="https://gshoai.github.io/" target="_blank">Minh Hoai</a><sup>2,4</sup>
+  </p>
+
+  <div class="inst-logos">
+    <div class="inst-logo">
+      <img src="img/logo/uwmadison.png" alt="UW-Madison">
+      <div class="inst-label"><sup>1</sup>University of<br>Wisconsin–Madison</div>
+    </div>
+    <div class="inst-sep"></div>
+    <div class="inst-logo">
+      <img src="img/logo/qualcomm.png" alt="Qualcomm AI Research">
+      <div class="inst-label"><sup>2</sup>Qualcomm AI Research*</div>
+    </div>
+    <div class="inst-sep"></div>
+    <div class="inst-logo">
+      <img src="img/logo/ptit.png" alt="PTIT">
+      <div class="inst-label"><sup>3</sup>Posts &amp; Telecom. Inst. of Tech.</div>
+    </div>
+    <div class="inst-sep"></div>
+    <div class="inst-logo">
+      <img src="img/logo/adelaide.png" alt="University of Adelaide">
+      <div class="inst-label"><sup>4</sup>University of Adelaide</div>
+    </div>
+  </div>
+
+  <p style="font-size:0.75rem; color:#7e7d7d; margin-bottom:16px;">
+    <sup>†</sup>Work done while at Qualcomm AI Research. &nbsp;
+    *Qualcomm AI Research is an initiative of Qualcomm Technologies, Inc.
+  </p>
+
+  <div class="btn-row">
+    <a href="img/BluRef_paper.pdf" target="_blank" class="link-btn link-btn-primary">
+      <i class="fas fa-file-pdf"></i> Paper
+    </a>
+    <a href="https://arxiv.org/abs/2603.14176" target="_blank" class="link-btn link-btn-outline">
+      <i class="ai ai-arxiv"></i> arXiv
+    </a>
+    <a href="https://github.com/qualcomm-ai-research/BluRef" target="_blank" class="link-btn link-btn-outline">
+      <i class="fab fa-github"></i> Code (TBD)
+    </a>
+    <a href="https://www.youtube.com/watch?v=bEGBgdCxGsk&t=8s" target="_blank" class="link-btn link-btn-outline">
+      <i class="fab fa-youtube" style="color:#ff0000;"></i> Video
+    </a>
+    <a href="https://drive.google.com/file/d/1rnATNNjKDB-ww1V_55VwsMNE1GrQi5DO/view?usp=sharing" target="_blank" class="link-btn link-btn-outline">
+      <i class="fas fa-image"></i> Poster
+    </a>
+    <!-- <a href="https://qualcomm-ai-research.github.io/BluRef/" target="_blank" class="link-btn link-btn-outline">
+      <i class="fas fa-globe"></i> Project
+    </a> -->
+  </div>
+
+  <!-- Teaser video (above TL;DR) -->
+  <div class="teaser-video">
+    <video autoplay loop muted playsinline>
+      <source src="img/Teaser1.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- TL;DR -->
+  <div class="tldr-box">
+    <strong>TL;DR —</strong>
+    BluRef is the <span class="em-blue">first unpaired reference-guided framework</span> for unsupervised image deblurring.
+    Instead of requiring costly paired blur–sharp datasets, BluRef uses
+    <span class="em-blue">easily obtainable sharp reference frames</span> (captured nearby in time, but never the exact ground truth)
+    to generate pseudo-sharp supervision via dense matching — <span class="em-blue">only during training</span>.
+    At test time, BluRef operates as a direct single-pass deblurring model with no reference frames needed.
+  </div>
+
+  <!-- Key results highlight -->
+  <div class="highlight-banner">
+    <div class="highlight-stat">
+      <div class="val gold">27.87</div>
+      <div class="desc">PSNR (dB) on real-world RB2V</div>
+      <span class="chip chip-amber">Surpasses supervised 27.43</span>
+    </div>
+    <div class="highlight-stat">
+      <div class="val pair-val" data-left="8.47" data-right="5.62">
+        <span class="num-left">8.47</span><span class="sep">/</span><span class="num-right">5.62</span>
+      </div>
+      <div class="desc">NIQE/FID on PhoneCraft (real phone)</div>
+      <span class="chip chip-blue">Best unsupervised</span>
+    </div>
+    <div class="highlight-stat">
+      <div class="val green">0</div>
+      <div class="desc">Paired training images required</div>
+      <span class="chip chip-green">Fully unsupervised</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ TEASER ══════════ -->
+<section class="sec" style="padding: 20px 20px 0;">
+  <div style="max-width:1200px; margin:0 auto;" class="rev">
+    <div class="fig fig-clean">
+      <img src="img/teaser7_lucky.png" alt="BluRef teaser figure">
+      <div class="fig-cap">
+        <strong>Three paradigms for image deblurring.</strong>
+        (Left) <strong>Supervised</strong> methods require costly paired blur–sharp datasets, limiting scalability.
+        (Middle) <strong>Reblurring-based</strong> methods (e.g., Blur2Blur) rely on indirect mappings through intermediate blur domains.
+        (Right) <strong>BluRef</strong> (ours) directly learns from unpaired blurry and sharp reference images
+        within the target domain. Reference frames are used <em style="color:#2563eb;">only during training</em> to generate
+        pseudo-sharp supervision — at inference, BluRef is a standard single-pass deblurring network.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ STICKY NAV ══════════ -->
+<nav class="snav">
+  <div class="snav-inner">
+    <a href="#abstract">Abstract</a>
+    <a href="#contributions">Contributions</a>
+    <a href="#method">Method</a>
+    <a href="#results">Results</a>
+    <a href="#robustness">Robustness</a>
+    <a href="#phonecraft">Real-World</a>
+    <a href="#poster">Poster</a>
+    <a href="#bibtex">BibTeX</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     ABSTRACT
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec" id="abstract">
+  <div class="sec-inner">
+    <div class="rev">
+      <p class="sec-tag">Abstract</p>
+      <h2 class="sec-h">Deblurring Without Paired Data or Pre-trained Networks</h2>
+      <div class="abst-box">
+        This paper introduces a novel <strong>unsupervised approach for image deblurring</strong>
+        that utilizes a simple process for training data collection, thereby enhancing the
+        applicability and effectiveness of deblurring methods. Our technique does
+        <span class="em-blue">not</span> require meticulously paired data of blurred and corresponding sharp images.
+        Instead, it uses <span class="em-blue">unpaired blurred and sharp images of similar scenes</span> to generate
+        pseudo-ground truth data by leveraging a <span class="em-blue">dense matching model</span> to identify
+        correspondences between a blurry image and reference sharp images. Thanks to the
+        simplicity of this training data collection process, our approach does not rely on
+        existing paired training data or pre-trained networks, making it more adaptable to
+        various scenarios and suitable for <span class="em-blue">networks of different sizes</span>, including those
+        designed for low-resource devices. We demonstrate that this novel approach achieves
+        <span class="em-blue">state-of-the-art unsupervised performance</span>, marking a significant advancement
+        in the field of image deblurring.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTRIBUTIONS
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec sec-alt" id="contributions">
+  <div class="sec-inner">
+    <div class="rev">
+      <p class="sec-tag">Contributions</p>
+      <h2 class="sec-h">Three Key Contributions</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="card-ico">🎯</div>
+          <h4>First Unpaired Reference-Guided Deblurring</h4>
+          <p>BluRef is the first framework to use <b>unpaired sharp reference images for training only</b>
+          — no paired supervision, no pre-trained deblurring network, and no reference frames needed at inference.
+          Unlike supervised reference-based methods that require exact correspondences, BluRef works with
+          easily collected, temporally displaced frames.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico">♻️</div>
+          <h4>Reusable Pseudo-Ground Truth</h4>
+          <p>BluRef's pseudo-GT images can be reused to train models of varying capacities,
+          including lightweight networks for mobile deployment — something other unsupervised
+          methods cannot provide.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico">🏆</div>
+          <h4>State-of-the-Art Unsupervised Results</h4>
+          <p>Extensive experiments show BluRef outperforms all prior unsupervised methods.
+          On the real-world RB2V benchmark, BluRef <b>surpasses the supervised upper-bound</b>
+          (27.87 vs. 27.43 dB). On PhoneCraft (real smartphone data), BluRef achieves the best NIQE and FID scores.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     METHOD
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec" id="method">
+  <div class="sec-inner wide">
+
+    <div class="rev">
+      <p class="sec-tag">Method</p>
+      <h2 class="sec-h">BluRef — Reference-based Deblurring</h2>
+      <p class="sec-body">
+        BluRef frames deblurring as an <em>iterative enhancement</em> process.
+        Given a blurry image <strong>I<sub>blur</sub></strong> and N unpaired sharp reference
+        images from similar scenes, our goal is to estimate the corresponding sharp image
+        without any paired supervision. Crucially, none of the reference images needs to be the exact
+        sharp version of the blurry input — they can be captured at different times
+        and from different spatial perspectives. The dense matching module and pseudo-sharp generation
+        are used <em>only during training</em>; at test time, BluRef operates as a direct
+        single-pass deblurring network.
+      </p>
+    </div>
+
+    <!-- Interactive method figure + steps -->
+    <div class="rev">
+      <div class="method-interactive" style="margin-top:20px; max-width: 980px; margin-left:auto; margin-right:auto;">
+        <!-- Left: interactive figure -->
+        <div>
+          <div class="method-fig-container" id="methodFigContainer">
+            <img id="methodFigImg" src="img/method/final.png" alt="BluRef pipeline">
+            <div class="method-fig-label" id="methodFigLabel">Full pipeline</div>
+          </div>
+          <p id="methodInteractionHint" class="method-hint">
+            <span class="hint-icon">👆</span>
+            Hover over each step below to explore the pipeline
+          </p>
+        </div>
+
+        <!-- Steps below: clickable steps -->
+        <div class="method-steps-row">
+
+          <div class="m-step" data-img="img/method/step1.png" data-label="Step 1 — Input & References">
+            <div class="m-step-head"><div class="step-n">1</div><h4>Input &amp; References</h4></div>
+            <p>Collect I<sub>blur</sub> and N unpaired sharp references {I<sub>ref</sub><sup>n</sup>}. Feed into Dense Matching 𝒢.</p>
+            <div class="step-detail">No alignment needed — references can come from different viewpoints and times.</div>
+          </div>
+
+          <div class="m-step" data-img="img/method/step2.png" data-label="Step 2 — Pseudo-Sharp Generation">
+            <div class="m-step-head"><div class="step-n">2</div><h4>Pseudo-Sharp Generation</h4></div>
+            <p>𝒢 finds pixel-level correspondences → pseudo-sharp I<sub>pseudo</sub><sup>(k)</sup> + confidence mask M<sub>pseudo</sub><sup>(k)</sup>.</p>
+            <div class="step-detail">Built on PDC-Net+ / GLU-Net-GOCor, self-supervisedly trained on sharp images only.</div>
+          </div>
+
+          <div class="m-step" data-img="img/method/step3.png" data-label="Step 3 — Network Optimization">
+            <div class="m-step-head"><div class="step-n">3</div><h4>Network Optimization</h4></div>
+            <p>Train NAFNet / Restormer using pseudo-sharp as GT under masked loss ℒ<sub>deblur</sub>.</p>
+            <div class="step-detail"><b style="color:#dc2626;">Problem:</b> Only one fixed pseudo-GT version — low quality early on, model never improves beyond it.</div>
+          </div>
+
+          <div class="m-step" data-img="img/method/step4.png" data-label="Step 4 — Iterative Refinement">
+            <div class="m-step-head"><div class="step-n">4</div><h4>Iterative Refinement ⭐</h4></div>
+            <p>Feed improved I<sub>deblur</sub><sup>(k)</sup> back → regenerate better pseudo-GT each epoch.</p>
+            <div class="step-detail"><b style="color:#059669;">Solution:</b> Better deblurred → better matching → better pseudo-GT → better model. No iteration at test time.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight callout -->
+    <div class="rev">
+      <div class="insight-box">
+        <div class="insight-title">💡 Why iteration is essential</div>
+        <p>If the deblurring network trains with a single, fixed pseudo-sharp target (Step 3 alone),
+        performance is limited by the initial low-quality pseudo-GT. By adding the iterative loop (Step 4),
+        improved deblurred estimates feed back into dense matching to regenerate <em>better</em> pseudo-GT
+        at each epoch — creating a self-improving cycle that converges toward ground-truth quality.</p>
+      </div>
+    </div>
+
+    <!-- three strategies -->
+    <div class="rev">
+      <h3 style="color:#222; font-size:1.1rem; font-weight:700; margin:28px 0 14px;">
+        Three Pseudo-Sharp Aggregation Strategies
+      </h3>
+      <p class="sec-body" style="margin-bottom:14px;">
+        When multiple reference images are available, BluRef offers three strategies for
+        combining their dense-matching outputs into a single pseudo-sharp target:
+      </p>
+      <div class="strat-grid">
+        <div class="strat strat-avg">
+          <div class="strat-tag">Weighted Average</div>
+          <h4>Avg.</h4>
+          <p>Apply 𝒟ℳ independently to each (I<sub>blur</sub>, I<sub>ref</sub><sup>n</sup>)
+          pair, then average the resulting pseudo-sharp images weighted by confidence masks.</p>
+        </div>
+        <div class="strat strat-seq">
+          <div class="strat-tag">Sequential Accumulation</div>
+          <h4>Seq.</h4>
+          <p>Iteratively refine I<sub>pseudo</sub> by using the output of the previous
+          iteration as input for the next, chaining sharp detail across references.</p>
+        </div>
+        <div class="strat strat-prog">
+          <div class="strat-tag">Progressive Averaging ⭐</div>
+          <h4>Prog. (Best)</h4>
+          <p>Combines both strategies — retaining sharp details from prior iterations
+          and selectively enhancing previously unmatched regions. Achieves top performance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dense Matching -->
+    <div class="rev">
+      <h3 style="color:#222; font-size:1.1rem; font-weight:700; margin:28px 0 12px;">
+        Dense Matching — Self-supervised Training
+      </h3>
+      <p class="sec-body">
+        The 𝒟ℳ model bridges the gap between blurry and sharp domains by learning to
+        extract corresponding regions across both. It is trained <em>self-supervisedly</em>
+        using only sharp images with synthetic warp augmentation — no blurry training images
+        needed. The model takes a target image (blurry or deblurred) and a reference,
+        outputting a warped result I<sub>trans</sub> and a confidence mask M<sub>conf</sub>.
+        Random motion-blur augmentation prevents leakage of the target domain's blur patterns
+        into DM training.
+      </p>
+    </div>
+
+    <!-- Reference Frame Collection Protocol -->
+    <div class="rev" style="margin-top:8px;">
+      <h3 style="color:#222; font-size:1.1rem; font-weight:700; margin:20px 0 12px;">
+        Reference Frame Collection Protocol
+      </h3>
+      <p class="sec-body" style="margin-bottom:14px;">
+        A key advantage of BluRef is that collecting training data is significantly simpler than
+        assembling paired blur–sharp datasets. For each blurry image, we collect N sharp reference
+        images from nearby frames in the same video. The exact protocol differs per dataset,
+        reflecting the practical constraints of each scenario:
+      </p>
+      <div class="fig fig-clean protocol-small">
+        <img src="img/Dataset.jpg" alt="Reference frame collection protocol">
+        <div class="fig-cap">
+          <strong>Protocol for collecting sharp reference images.</strong>
+          For structured benchmarks (GoPro, RB2V), consecutive sharp frames displaced by Δ are selected from both sides.
+          For in-the-wild data (PhoneCraft), references are randomly sampled from separate sharp clips.
+        </div>
+      </div>
+      <div class="proto-cards" style="margin-top:16px;">
+        <div class="proto-card">
+          <span class="proto-tag proto-tag-syn">Synthetic</span>
+          <h4>GoPro</h4>
+          <p>1,050 blurry + 1,053 sharp images from the same sequences.
+          Sharp references are consecutive frames shifted by Δ ∈ {1, 10, 20} on each side.
+          N = 6 references per blurry image by default.</p>
+        </div>
+        <div class="proto-card">
+          <span class="proto-tag proto-tag-real">Real Blur</span>
+          <h4>RB2V</h4>
+          <p>5,400 blurry + 5,600 sharp images from real street scenes.
+          Same temporal-shift protocol as GoPro. Tests BluRef's ability
+          to handle real-world blur patterns and moving objects.</p>
+        </div>
+        <div class="proto-card">
+          <span class="proto-tag proto-tag-wild">In-the-Wild</span>
+          <h4>PhoneCraft</h4>
+          <p>12 blurry + 11 sharp video clips (30–40s each, 60fps) from a handheld smartphone.
+          Blurry and sharp clips are <b>completely separate</b> — references are randomly selected
+          to eliminate any temporal correlation.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     QUANTITATIVE RESULTS
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec sec-alt" id="results">
+  <div class="sec-inner wide">
+
+    <div class="rev">
+      <p class="sec-tag">Experiments</p>
+      <h2 class="sec-h">Quantitative Comparison</h2>
+      <p class="sec-body" style="margin-bottom:8px;">
+        <strong>Goal:</strong> Compare BluRef against existing unsupervised deblurring methods
+        (DualGAN, UID-GAN, UAUD) and supervised upper-bounds (NAFNet, Restormer trained on paired data)
+        across two benchmarks — GoPro (synthetic blur) and RB2V (real blur) — with temporal gaps
+        Δ = 1, 10, and 20 frames.
+      </p>
+      <p class="sec-body" style="margin-bottom:20px;">
+        <strong>Key finding:</strong> BluRef with Progressive Averaging consistently outperforms all
+        unsupervised baselines by a large margin. On the real-world RB2V dataset, NAFNet-BluRef (Prog.)
+        achieves <b style="color:#b91c1c;">27.87 dB</b> — <em>surpassing</em> the supervised Restormer upper-bound
+        of 27.43 dB, despite using zero paired training data.
+      </p>
+    </div>
+
+    <!-- Interactive quantitative table -->
+    <div class="rev">
+      <div class="qtab-wrap">
+        <div class="qtab-header">
+          <h4>Comparison of deblurring methods on GoPro and RB2V</h4>
+          <p>PSNR↑ / SSIM↑ scores. Best in <b style="color:#b91c1c;">bold red</b>, second best <u style="color:#2563eb;">underlined blue</u>.</p>
+        </div>
+        <div style="overflow-x:auto; padding: 0 4px;">
+        <table class="qtab">
+          <thead>
+            <tr>
+              <th style="text-align:left; min-width:220px;">Method</th>
+              <th>GoPro (Δ=1)</th><th>GoPro (Δ=10)</th><th>GoPro (Δ=20)</th>
+              <th>RB2V (Δ=1)</th><th>RB2V (Δ=10)</th><th>RB2V (Δ=20)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="sh"><td colspan="7">Unsupervised Deblurring</td></tr>
+            <tr><td style="text-align:left;padding-left:16px;">DualGAN</td>
+              <td>22.23/0.721</td><td>22.10/0.719</td><td>21.24/0.702</td>
+              <td>21.01/0.512</td><td>20.87/0.500</td><td>20.92/0.505</td></tr>
+            <tr><td style="text-align:left;padding-left:16px;">UID-GAN</td>
+              <td>23.42/0.732</td><td>23.18/0.724</td><td>22.38/0.724</td>
+              <td>22.22/0.578</td><td>22.01/0.551</td><td>22.13/0.569</td></tr>
+            <tr><td style="text-align:left;padding-left:16px;">UAUD</td>
+              <td>24.25/0.792</td><td>24.02/0.750</td><td>23.77/0.745</td>
+              <td>22.87/0.590</td><td>22.29/0.581</td><td>22.28/0.581</td></tr>
+
+            <tr class="sh"><td colspan="7">BluRef — NAFNet backbone (Ours)</td></tr>
+            <tr class="ours"><td style="text-align:left;padding-left:16px;">NAFNet–BluRef (Avg.)</td>
+              <td>29.32/0.933</td><td>29.21/0.915</td><td>29.15/0.911</td>
+              <td>25.97/0.783</td><td>25.96/0.783</td><td>25.65/0.775</td></tr>
+            <tr class="ours"><td style="text-align:left;padding-left:16px;">NAFNet–BluRef (Seq.)</td>
+              <td>29.82/0.947</td><td>29.68/0.940</td><td>29.60/0.940</td>
+              <td>26.14/0.790</td><td>26.02/0.787</td><td>25.93/0.780</td></tr>
+            <tr class="ours"><td style="text-align:left;padding-left:16px;font-weight:700;">NAFNet–BluRef (Prog.) ⭐</td>
+              <td class="best">31.94/0.960</td><td class="best">31.87/0.955</td><td class="best">31.52/0.947</td>
+              <td class="best">27.87/0.821</td><td class="best">27.72/0.820</td><td class="best">27.24/0.812</td></tr>
+
+            <tr class="sh"><td colspan="7">BluRef — Restormer backbone (Ours)</td></tr>
+            <tr class="ours"><td style="text-align:left;padding-left:16px;">Restormer–BluRef (Avg.)</td>
+              <td>27.12/0.905</td><td>27.04/0.895</td><td>26.98/0.893</td>
+              <td>25.41/0.816</td><td>25.38/0.812</td><td>24.78/0.801</td></tr>
+            <tr class="ours"><td style="text-align:left;padding-left:16px;">Restormer–BluRef (Seq.)</td>
+              <td>28.46/0.923</td><td>28.37/0.920</td><td>28.31/0.912</td>
+              <td>25.22/0.810</td><td>25.20/0.811</td><td>24.73/0.792</td></tr>
+            <tr class="ours"><td style="text-align:left;padding-left:16px;">Restormer–BluRef (Prog.)</td>
+              <td class="sec-best">31.02/0.950</td><td class="sec-best">30.97/0.949</td><td class="sec-best">30.95/0.938</td>
+              <td class="sec-best">26.82/0.839</td><td class="sec-best">26.76/0.832</td><td class="sec-best">26.13/0.829</td></tr>
+
+            <tr class="sh"><td colspan="7">Supervised Upper-bound</td></tr>
+            <tr class="upper"><td style="text-align:left;padding-left:16px;">NAFNet (supervised)</td>
+              <td colspan="3" style="text-align:center;">33.32 / 0.962</td>
+              <td colspan="3" style="text-align:center;">28.54 / 0.824</td></tr>
+            <tr class="upper"><td style="text-align:left;padding-left:16px;">Restormer (supervised)</td>
+              <td colspan="3" style="text-align:center;">32.92 / 0.961</td>
+              <td colspan="3" style="text-align:center;">27.43 / 0.849</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="qtab-note">
+          On RB2V, NAFNet-BluRef (Prog.) achieves <b style="color:#b91c1c;">27.87 dB</b>,
+          surpassing the supervised Restormer upper-bound of 27.43 dB — despite using
+          <b>zero paired training data</b>. This demonstrates that dense-matching references
+          can provide supervision signal comparable to or better than paired datasets
+          on real-world blur.
+        </div>
+      </div>
+    </div>
+
+    <!-- qualitative figure -->
+    <div class="rev" style="margin-top:20px;">
+      <h3 style="color:#222; font-size:1.1rem; font-weight:700; margin:8px 0 8px;">
+        Qualitative Comparison
+      </h3>
+      <p class="sec-body" style="margin-bottom:14px;">
+        Visual examples confirm the quantitative trends. Unsupervised baselines produce
+        blurry or artifact-laden outputs, while BluRef recovers fine details — body shapes,
+        facial features, and textures — approaching supervised quality.
+      </p>
+      <div class="fig">
+        <img src="img/qualitative_new3.jpg" alt="Qualitative comparison GoPro RB2V">
+        <div class="fig-cap">
+          <strong>Qualitative results on GoPro and RB2V.</strong>
+          Unsupervised baselines (DualGAN, UID-GAN, UAUD) fail to recover sharp details.
+          BluRef with NAFNet / Restormer produces results close to the supervised upper-bound and ground truth.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ROBUSTNESS TO TEMPORAL GAP
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec" id="robustness">
+  <div class="sec-inner wide">
+
+    <div class="rev">
+      <p class="sec-tag">Ablation</p>
+      <h2 class="sec-h">Robustness to Temporal Gap</h2>
+
+      <div class="question-box">
+        <span class="q-icon">❓</span>
+        <span class="q-text">Does BluRef remain effective when reference frames differ significantly
+        from the blurry input due to camera or object motion?</span>
+      </div>
+
+      <p class="sec-body" style="margin-top:16px; margin-bottom:20px;">
+        In practice, reference frames may be temporally far from the blurry input, leading to
+        significant content misalignment. We test BluRef's robustness by increasing Δ from 1 to 10
+        and 20 frames — drastically reducing the overlap between blur and reference content.
+      </p>
+    </div>
+
+    <!-- Side by side: Delta figure + matching stats table -->
+    <div class="rev">
+      <div class="side-by-side">
+        <div class="fig" style="margin:0;">
+          <img src="img/Delta1.jpg" alt="Content gap visualization">
+          <div class="fig-cap">
+            <strong>Visualizing content gaps.</strong>
+            At Δ = 10 and 20, reference frames show substantially different content from the blurry input,
+            with matched regions falling below 40%.
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size:0.92rem; color:#222; margin-bottom:10px;">Matched Content Between Blur &amp; Reference</h4>
+          <p style="font-size:0.84rem; color:#666; line-height:1.55; margin-bottom:12px;">
+            Despite severe content gaps, BluRef's dense matching extracts
+            enough correspondences for effective pseudo-sharp generation.
+          </p>
+          <table class="mini-stat-table">
+            <thead>
+              <tr><th>Dataset</th><th>Δ = 10</th><th>Δ = 20</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b>GoPro</b></td><td class="low">36.1%</td><td class="low">28.4%</td></tr>
+              <tr><td><b>RB2V</b></td><td class="low">33.7%</td><td class="low">25.2%</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.78rem; color:#888; margin-top:10px; line-height:1.5;">
+            All percentages are below 40%, yet BluRef shows only minor PSNR drops
+            (e.g., 31.94→31.52 dB on GoPro, 27.87→27.24 dB on RB2V from Δ=1 to Δ=20).
+            This confirms BluRef is practical for real-world settings where
+            exact temporal alignment is not available.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pseudo-sharp quality over training -->
+    <div class="rev" style="margin-top:28px;">
+      <h3 style="color:#222; font-size:1.05rem; font-weight:700; margin:0 0 8px;">
+        Pseudo-Sharp Quality Over Training
+      </h3>
+      <p class="sec-body" style="margin-bottom:16px;">
+        As training progresses, the deblurring network produces cleaner estimates, which in turn
+        provide better inputs for the dense matching module. This virtuous cycle progressively
+        expands the confidence mask coverage and improves pseudo-sharp quality.
+      </p>
+      <div class="fig">
+        <img src="img/Pseudo_sharp.jpg" alt="Pseudo-sharp generation over iterations">
+        <div class="fig-cap">
+          <strong>Visual progression of pseudo-sharp generation.</strong>
+          The binary confidence mask gradually expands as the dense matching captures more
+          correspondences between the deblurred estimate and sharp references.
+          By 400K iterations, the pseudo-sharp image closely resembles the ground truth.
+        </div>
+      </div>
+      <div class="fig" style="margin-top:16px;">
+        <img src="img/psnr4.jpg" alt="PSNR of pseudo-sharp images over training">
+        <div class="fig-cap">
+          <strong>Pseudo-sharp PSNR over training iterations</strong> on GoPro and RB2V (Δ=1).
+          After ~100K iterations, pseudo-sharp quality converges toward ground truth, validating
+          the self-improving cycle: better deblurred → better matching → better pseudo-GT → better model.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     REAL-WORLD GENERALIZATION — PHONECRAFT
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec sec-alt" id="phonecraft">
+  <div class="sec-inner wide">
+
+    <div class="rev">
+      <p class="sec-tag">Real-World Generalization</p>
+      <h2 class="sec-h">PhoneCraft — Can BluRef Handle Fully Unpaired Real-World Data?</h2>
+
+      <div class="question-box">
+        <span class="q-icon">❓</span>
+        <span class="q-text">Can BluRef generalize to fully unconstrained real-world settings
+        where blurry and sharp data come from completely separate, unsynchronized recordings?</span>
+      </div>
+
+      <p class="sec-body" style="margin-top:16px;">
+        <strong>Why PhoneCraft matters:</strong> PhoneCraft is a challenging real-world benchmark
+        consisting of 12 blurry and 11 sharp video clips (30–40 seconds each, 60fps) recorded
+        by a handheld smartphone in unconstrained environments.
+        Unlike GoPro and RB2V, PhoneCraft has <em>no paired ground truth</em> and
+        <em>no temporal alignment</em> between blurry and sharp clips at all.
+        Blurry frames arise from rapid camera or object motion, while sharp clips are captured
+        when the camera is mostly static. References are <b>randomly selected</b> from separate
+        sharp clips for each blurry input, eliminating any temporal correlation.
+      </p>
+      <p class="sec-body" style="margin-top:12px; margin-bottom:20px;">
+        This experiment directly demonstrates BluRef's practicality: it confirms that our method
+        works with <em>separate, unsynchronized sharp and blurry videos</em> — a setting
+        that is trivially easy to collect in practice, requiring no special equipment or controlled conditions.
+      </p>
+    </div>
+
+    <!-- Practicality cards from rebuttal -->
+    <div class="rev">
+      <h3 style="color:#222; font-size:1.05rem; font-weight:700; margin:0 0 14px;">
+        What PhoneCraft Demonstrates
+      </h3>
+      <div class="prac-cards">
+        <div class="prac-card">
+          <h4>📱 Easy Data Collection</h4>
+          <p>Collecting usable training data in BluRef's setting is drastically simpler than
+          assembling paired blur–sharp datasets. Just record blurry and sharp clips of similar scenes — no synchronization needed.</p>
+        </div>
+        <div class="prac-card">
+          <h4>🔀 Works with Separate Videos</h4>
+          <p>BluRef handles completely separate, unsynchronized blurry and sharp recordings.
+          References are randomly sampled, proving the method does not rely on temporal correspondence.</p>
+        </div>
+        <div class="prac-card">
+          <h4>🌍 Real-World Robustness</h4>
+          <p>Strong performance on unconstrained smartphone data — with complex blur patterns, varying motion,
+          and no controlled conditions — confirms generalization beyond curated benchmarks.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PhoneCraft + Synergistic tables side by side -->
+    <div class="rev" style="margin-top:16px;">
+      <h3 style="color:#222; font-size:1.05rem; font-weight:700; margin:0 0 14px;">
+        Quantitative Results on PhoneCraft &amp; Synergistic Combination
+      </h3>
+      <div class="side-by-side">
+        <div>
+          <div class="table-fig">
+            <img src="img/Syn1.png" alt="Table 4: PhoneCraft results">
+            <div class="table-fig-cap">
+              <strong>Table 4. Performance on PhoneCraft</strong> (NIQE↓ / FID↓).
+              Best scores in <b>bold</b>, second best <u>underlined</u>.
+              BluRef + Blur2Blur (RSBlur) achieves <b style="color:#b91c1c;">8.47 / 5.62</b> — the best by a clear margin.
+              BluRef alone (10.43/6.45) already surpasses all Blur2Blur variants.
+            </div>
+          </div>
+          <p style="font-size:0.82rem; color:#666; line-height:1.55; margin-top:10px;">
+            <strong>Result:</strong> BluRef alone already outperforms all baselines including
+            Blur2Blur variants. When combined with Blur2Blur (RSBlur), the synergy pushes results
+            to <b>8.47/5.62</b>, demonstrating that BluRef's pseudo-sharp supervision is <em>complementary</em>
+            to reblurring-based approaches.
+          </p>
+        </div>
+        <div>
+          <div class="table-fig">
+            <img src="img/Real1.png" alt="Table 5: Synergistic results">
+            <div class="table-fig-cap">
+              <strong>Table 5. Synergistic combination</strong> on GoPro and RB2V (PSNR↑ / SSIM↑).
+              Best scores in <b>bold</b>.
+              BluRef + Blur2Blur (RSBlur) reaches <b style="color:#b91c1c;">33.30 / 0.963</b> on GoPro
+              and <b style="color:#b91c1c;">29.62 / 0.872</b> on RB2V — surpassing the supervised upper-bound on both datasets.
+            </div>
+          </div>
+          <p style="font-size:0.82rem; color:#666; line-height:1.55; margin-top:10px;">
+            <strong>Result:</strong> Combining BluRef with Blur2Blur and a supervised deblurring network
+            <em>surpasses</em> the supervised upper-bound on <b>both</b> datasets —
+            <b style="color:#b91c1c;">33.30</b> vs. 33.32 on GoPro and <b style="color:#b91c1c;">29.62</b> vs. 28.54 on RB2V.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why unsupervised surpasses supervised -->
+    <div class="rev" style="margin-top:16px;">
+      <div class="surpass-box">
+        <h3>🏅 Why Does Unsupervised BluRef Surpass Supervised Models?</h3>
+        <p>
+          Supervised models are fundamentally limited by the fidelity of their ground-truth labels.
+          Even when paired data can be collected using specialized hardware, the resulting "sharp" labels
+          are rarely perfect. On <b>RB2V</b>, hardware limitations introduce residual blur into the
+          ground-truth images, causing supervised models to overfit to these imperfect labels.
+        </p>
+        <p>
+          In contrast, BluRef leverages <em style="color:#2563eb; font-style:normal; font-weight:600;">external sharp reference frames</em>
+          — which can be cleaner than the hardware-limited ground truth — to generate pseudo-sharp
+          supervision that exceeds the quality of available labels. This advantage is further
+          demonstrated on <b>PhoneCraft</b>, where no ground truth exists at all: supervised baselines
+          struggle while BluRef continues to generalize effectively.
+        </p>
+        <p style="margin-bottom:0;">
+          As shown in Table 5, our unsupervised framework (BluRef + Blur2Blur) outperforms supervised models
+          on both GoPro and RB2V — proving that reference-based pseudo-GT can overcome the ceiling
+          imposed by imperfect paired data. See the qualitative comparison below:
+        </p>
+      </div>
+    </div>
+
+    <!-- PhoneCraft qualitative (after quantitative tables) -->
+    <div class="rev" style="margin-top:16px;">
+      <h3 style="color:#222; font-size:1.05rem; font-weight:700; margin:0 0 14px;">
+        Qualitative Results on PhoneCraft
+      </h3>
+      <div class="fig">
+        <img src="img/PhoneCraft_new1.jpg" alt="PhoneCraft qualitative comparison">
+        <div class="fig-cap">
+          <strong>Qualitative comparison on PhoneCraft.</strong>
+          BluRef recovers text, fine textures, and structural details from real smartphone blur.
+          Combining BluRef with Blur2Blur (RSBlur intermediate) yields the sharpest results —
+          consistent with the quantitative improvements shown in Tables 4 and 5 above.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     POSTER
+     ══════════════════════════════════════════════════════════ -->
+<!-- <div class="divider"></div>
+<section class="sec sec-alt" id="poster">
+  <div class="sec-inner wide">
+    <div class="rev">
+      <p class="sec-tag">Poster</p>
+      <h2 class="sec-h">CVPR 2026 Poster</h2>
+      <p class="sec-body" style="margin-bottom:18px;">
+        Click the poster to open the full-resolution PDF, or use the download button below.
+      </p>
+
+      <div class="poster-frame">
+        <iframe src="https://drive.google.com/file/d/1rnATNNjKDB-ww1V_55VwsMNE1GrQi5DO/preview" class="poster-embed" allow="autoplay" title="BluRef CVPR 2026 Poster"></iframe>
+      </div>
+
+      <div class="btn-row" style="margin-top:18px;">
+        <a href="https://drive.google.com/file/d/1rnATNNjKDB-ww1V_55VwsMNE1GrQi5DO/view?usp=sharing" target="_blank" class="link-btn link-btn-primary">
+          <i class="fas fa-file-pdf"></i> Open Poster (Google Drive)
+        </a>
+        <a href="https://drive.google.com/uc?export=download&id=1rnATNNjKDB-ww1V_55VwsMNE1GrQi5DO" target="_blank" class="link-btn link-btn-outline">
+          <i class="fas fa-download"></i> Download PDF
+        </a>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- ══════════════════════════════════════════════════════════
+     BIBTEX
+     ══════════════════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="sec" id="bibtex">
+  <div class="sec-inner">
+    <div class="rev">
+      <p class="sec-tag">Citation</p>
+      <h2 class="sec-h">BibTeX</h2>
+      <p class="sec-body" style="margin-bottom:14px;">
+        Please cite the arXiv version until CVPR'26 proceedings release.
+      </p>
+      <pre class="bib">@article{pham2026bluref,
+  title={BluRef: Unsupervised Image Deblurring with Dense-Matching References},
+  author={Pham, Bang-Dang and Tran, Anh and Pham, Cuong and Hoai, Minh},
+  journal={arXiv preprint arXiv:2603.14176},
+  year={2026}
+}</pre>
+    </div>
+
+    <div class="rev" style="margin-top:36px;">
+      <p class="sec-tag">References</p>
+      <div style="font-size:0.84rem; color:#777; line-height:2.1;">
+        [1] Chen et al., <em>Simple Baselines for Image Restoration</em> (NAFNet), ECCV 2022.<br>
+        [2] Zamir et al., <em>Restormer: Efficient Transformer for High-Resolution Image Restoration</em>, CVPR 2022.<br>
+        [3] Truong et al., <em>PDC-Net+: Enhanced Probabilistic Dense Correspondence Network</em>, TPAMI 2023.<br>
+        [4] Truong et al., <em>GLU-Net: Global-Local Universal Correspondence Network</em> and <em>GOCor: Learning Global Correspondence with Local Correlation</em>, CVPR 2020 / NeurIPS 2020.<br>
+        [5] Yi et al., <em>DualGAN: Unsupervised Dual Learning for Image-to-Image Translation</em>, ICCV 2017.<br>
+        [6] Lu et al., <em>UID-GAN: Unsupervised Image Deblurring via Generative Adversarial Networks</em>, ICCV 2019.<br>
+        [7] Pham et al., <em>Blur2Blur: Blur Conversion for Unsupervised Image Deblurring on Unknown Domains</em>, CVPR 2024.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="site-footer">
+  <div class="footer-icons">
+    <a href="img/BluRef_paper.pdf" target="_blank" title="Paper PDF"><i class="fas fa-file-pdf"></i></a>
+    <a href="https://github.com/qualcomm-ai-research/BluRef" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+    <a href="https://arxiv.org/abs/2603.14176" target="_blank" title="arXiv"><i class="ai ai-arxiv"></i></a>
+  </div>
+  <!-- <p> -->
+    <!-- Template adapted from <a href="https://zero1778.github.io/blur2blur/" target="_blank">Blur2Blur (CVPR 2024)</a> -->
+    <!-- and <a href="https://nerfies.github.io/" target="_blank">Nerfies</a>. -->
+  <!-- </p> -->
+  <p style="margin-top:10px; max-width:600px; margin-left:auto; margin-right:auto; line-height:1.6;">
+    This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+    which was adopted from the <a href="https://nerfies.github.io/" target="_blank">Nerfies</a> project page.
+    This website is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+  </p>
+</footer>
+
+<!-- ══════════ SCRIPTS ══════════ -->
+<script>
+/* ── scroll-reveal ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.rev').forEach(el => obs.observe(el));
+
+/* ── sticky nav active section ── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.snav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+});
+
+/* ── animated counter for highlight stats ── */
+function animateCounter(el, target, decimalsOverride = null) {
+  const isDecimal = target % 1 !== 0;
+  const decimals = decimalsOverride !== null ? decimalsOverride : (isDecimal ? 2 : 0);
+  let current = 0;
+  const step = target / 35;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = current.toFixed(decimals);
+  }, 28);
+}
+
+function animatePairCounter(el) {
+  const leftTarget = parseFloat(el.getAttribute('data-left'));
+  const rightTarget = parseFloat(el.getAttribute('data-right'));
+  const leftEl = el.querySelector('.num-left');
+  const rightEl = el.querySelector('.num-right');
+
+  if (!isNaN(leftTarget) && leftEl) animateCounter(leftEl, leftTarget, 2);
+  if (!isNaN(rightTarget) && rightEl) animateCounter(rightEl, rightTarget, 2);
+}
+
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.val').forEach(v => {
+        if (v.classList.contains('pair-val')) {
+          animatePairCounter(v);
+          return;
+        }
+
+        const num = parseFloat(v.textContent);
+        if (!isNaN(num) && num > 0) animateCounter(v, num);
+      });
+      counterObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+const banner = document.querySelector('.highlight-banner');
+if (banner) counterObs.observe(banner);
+
+/* ── table row hover highlight ── */
+document.querySelectorAll('.qtab tbody tr:not(.sh)').forEach(row => {
+  row.addEventListener('mouseenter', () => row.style.background = '#f0f4ff');
+  row.addEventListener('mouseleave', () => row.style.background = '');
+});
+
+/* ── interactive method figure: desktop hover, mobile tap ── */
+(function(){
+  const figImg = document.getElementById('methodFigImg');
+  const figLabel = document.getElementById('methodFigLabel');
+  const hint = document.getElementById('methodInteractionHint');
+  const steps = document.querySelectorAll('.m-step');
+  const container = document.querySelector('.method-interactive');
+  const defaultSrc = 'img/method/final.png';
+  const defaultLabel = 'Full pipeline';
+
+  function isSmallScreenMode() {
+    return window.matchMedia('(hover: none), (pointer: coarse), (max-width: 760px)').matches;
+  }
+
+  function showStep(src, label) {
+    if (figImg.src.endsWith(src.replace(/^.*\//, ''))) {
+      figLabel.textContent = label;
+      return;
+    }
+    figImg.style.opacity = '0.3';
+    setTimeout(() => {
+      figImg.src = src;
+      figLabel.textContent = label;
+      figImg.style.opacity = '1';
+    }, 120);
+  }
+
+  function resetToDefault() {
+    showStep(defaultSrc, defaultLabel);
+    steps.forEach(s => s.classList.remove('active'));
+  }
+
+  function activateStep(step) {
+    showStep(step.getAttribute('data-img'), step.getAttribute('data-label'));
+    steps.forEach(s => s.classList.remove('active'));
+    step.classList.add('active');
+  }
+
+  steps.forEach(step => {
+    step.addEventListener('mouseenter', () => {
+      if (isSmallScreenMode()) return;
+      activateStep(step);
+    });
+
+    step.addEventListener('click', () => {
+      if (!isSmallScreenMode()) return;
+      activateStep(step);
+    });
+  });
+
+  if (container) {
+    container.addEventListener('mouseleave', () => {
+      if (isSmallScreenMode()) return;
+      resetToDefault();
+    });
+  }
+
+  function applyResponsiveInteractionHint() {
+    if (!hint) return;
+    hint.innerHTML = isSmallScreenMode()
+      ? '<span class="hint-icon">👇</span> Tap a step below to explore the pipeline'
+      : '<span class="hint-icon">👇</span> Hover over each step below to explore the pipeline';
+  }
+
+  function syncMethodInteractionMode() {
+    applyResponsiveInteractionHint();
+    resetToDefault();
+  }
+
+  syncMethodInteractionMode();
+  window.addEventListener('resize', syncMethodInteractionMode);
+
+  /* preload images */
+  steps.forEach(step => { const img = new Image(); img.src = step.getAttribute('data-img'); });
+  new Image().src = defaultSrc;
+})();
+</script>
+</body>
+</html>

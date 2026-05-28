@@ -357,12 +357,19 @@ nav::after {
   display: inline-block;
 }
 
-.news-item strong.paper-name {
+.news-item strong.paper-name,
+.news-item a.paper-name {
   font-style: normal;
   font-weight: 700;
   font-size: 15.2px;
   color: #0f172a;
   letter-spacing: -0.1px;
+  text-decoration: none;
+}
+
+.news-item a.paper-name:hover {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 /* ===================== EXPERIENCE ===================== */

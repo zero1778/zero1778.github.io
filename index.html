@@ -8,25 +8,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
   <link rel="icon" sizes="256x256" href="data/avatar4.jpg" type="image/jpeg">
+  <script>
+    // Apply saved theme before first paint to avoid flash
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 
 <body>
+
+  <div class="bg-decor"><div class="dot-grid"></div></div>
+  <div id="scroll-progress"></div>
 
   <!-- ==================== NAVIGATION ==================== -->
   <nav>
     <div class="nav-inner">
       <a href="#" class="nav-name">Daniel Pham</a>
-      <ul class="nav-links">
-        <li><a href="#news">News</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#research">Research</a></li>
-        <li><a href="#awards">Awards</a></li>
-      </ul>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="#news">News</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#research">Research</a></li>
+          <li><a href="#awards">Awards</a></li>
+        </ul>
+        <button id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+      </div>
     </div>
   </nav>
 
@@ -69,7 +83,7 @@
       </div>
       <div class="bio-photo">
         <a href="data/avatar4.jpg">
-          <img alt="Bang-Dang Pham" src="data/avatar4.jpg">
+          <img alt="Bang-Dang Pham" src="data/thumbs/avatar_512.jpg" width="512" height="512" fetchpriority="high">
         </a>
       </div>
     </div>
@@ -89,7 +103,7 @@
         <div class="news-item">
           <span class="news-date">Feb 2026</span>
           <span class="news-emoji">&#x1F3C6;</span>
-          <span><a href="/BluRef/" class="paper-name">BluRef</a> accepted to <a href="https://cvpr.thecvf.com/">CVPR 2026</a> - See you guys in Denver, CO &#x1F1FA;&#x1F1F8;</span>
+          <span><a href="https://qualcomm-ai-research.github.io/BluRef/" class="paper-name">BluRef</a> accepted to <a href="https://cvpr.thecvf.com/">CVPR 2026</a> - See you guys in Denver, CO &#x1F1FA;&#x1F1F8;</span>
         </div>
 
         <div class="news-item">
@@ -138,7 +152,7 @@
 
       <div class="exp-item">
         <div class="exp-logo">
-          <img src="data/logo/amazon_logo.svg" alt="Amazon">
+          <img src="data/logo/amazon_logo.svg" alt="Amazon" width="58" height="58" loading="lazy">
         </div>
         <div class="exp-content">
           <div><span class="exp-role">Applied Scientist Intern</span> &nbsp;&bull;&nbsp;
@@ -146,14 +160,14 @@
             <!-- <span class="incoming-badge">Incoming</span> -->
           </div>
           <div class="exp-desc">Working on <strong>World modeling</strong> and <strong>Video generation</strong>.</div>
-          <div class="exp-mentor">Mentor: <a href="https://arking1995.github.io/">Liu He</a> and <a href="https://harryliew.github.io/">Huidong Liu</a></div>
+          <div class="exp-mentor">Mentor: <a href="https://arking1995.github.io/">Liu He</a>, <a href="https://tsun.github.io/">Tao Sun</a>, and <a href="https://www.linkedin.com/in/yetian-chen/">Yetian Chen</a></div>
         </div>
         <div class="exp-date">May 2026 &ndash; Present</div>
       </div>
 
       <div class="exp-item">
         <div class="exp-logo">
-          <img src="data/logo/sony_logo.jpg" alt="Sony R&D">
+          <img src="data/logo/sony_logo.jpg" alt="Sony R&D" width="58" height="58" loading="lazy">
         </div>
         <div class="exp-content">
           <div><span class="exp-role">Research Intern</span> &nbsp;&bull;&nbsp;
@@ -167,7 +181,7 @@
 
       <div class="exp-item">
         <div class="exp-logo">
-          <img src="data/logo/qualcomm_logo.png" alt="Qualcomm AI Research">
+          <img src="data/logo/qualcomm_logo.png" alt="Qualcomm AI Research" width="58" height="58" loading="lazy">
         </div>
         <div class="exp-content">
           <div><span class="exp-role">AI Research Resident</span> &nbsp;&bull;&nbsp;
@@ -190,11 +204,11 @@
         <!-- Paper 1: BluRef -->
         <div class="paper-item">
           <div class="paper-thumb">
-            <img src="BluRef/teaser.jpg" alt="BluRef teaser">
+            <img src="data/thumbs/bluref_600.jpg" alt="BluRef teaser" width="600" height="425" loading="lazy">
           </div>
           <div class="paper-content">
             <div class="paper-title">
-              <a href="/BluRef/">BluRef: Unsupervised Image Deblurring with Dense-Matching References</a>
+              <a href="https://qualcomm-ai-research.github.io/BluRef/">BluRef: Unsupervised Image Deblurring with Dense-Matching References</a>
             </div>
             <div class="paper-authors">
               <strong>Bang-Dang Pham</strong>,
@@ -204,7 +218,10 @@
             </div>
             <div class="venue-row">
               <span class="venue-badge venue-cvpr">CVPR 2026</span>
-              <a href="https://arxiv.org/abs/2603.14176" class="paper-link-btn"><i class="ai ai-arxiv"></i> arXiv</a>
+              <div class="paper-links">
+                <a href="https://qualcomm-ai-research.github.io/BluRef/" class="paper-link-btn"><i class="fa-solid fa-globe"></i> Project</a>
+                <a href="https://arxiv.org/abs/2603.14176" class="paper-link-btn"><i class="ai ai-arxiv"></i> arXiv</a>
+              </div>
             </div>
             <p class="paper-desc">
               Introduces a novel <strong><em>unpaired reference-based deblurring</em></strong> framework for camera-specific image restoration,
@@ -218,7 +235,7 @@
         <!-- Paper 2: Blur2Blur -->
         <div class="paper-item">
           <div class="paper-thumb">
-            <img src="data/B2B_Pipeline.jpg" alt="Blur2Blur pipeline">
+            <img src="data/thumbs/b2b_pipeline_600.jpg" alt="Blur2Blur pipeline" width="600" height="297" loading="lazy">
           </div>
           <div class="paper-content">
             <div class="paper-title">
@@ -250,7 +267,7 @@
         <!-- Paper 3: HyperCUT -->
         <div class="paper-item">
           <div class="paper-thumb">
-            <img src="data/thumbnail_cvpr.png" alt="HyperCUT teaser">
+            <img src="data/thumbs/hypercut_600.jpg" alt="HyperCUT teaser" width="600" height="335" loading="lazy">
           </div>
           <div class="paper-content">
             <div class="paper-title">
@@ -321,10 +338,12 @@
     </div>
 
     <footer class="footer">
-      <!-- Template adapted from <a href="https://github.com/jonbarron/website">Jon Barron</a> -->
+      &copy; <span id="footer-year">2026</span> Bang-Dang Pham &middot; Template adapted from <a href="https://github.com/jonbarron/website">Jon Barron</a>
     </footer>
 
   </div>
+
+  <button id="back-to-top" aria-label="Back to top" title="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
 
 <script>
 (function () {
@@ -335,7 +354,9 @@
 
   // Fix min-width to longest phrase so flex wraps based on constant width, never shifts
   const ghost = document.createElement('span');
-  ghost.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-size:13.5px;font-weight:600;font-family:inherit';
+  const lineStyle = getComputedStyle(line);
+  ghost.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-weight:600;' +
+    'font-size:' + lineStyle.fontSize + ';font-family:' + lineStyle.fontFamily;
   const longest = phrases.reduce((a, b) => a.length > b.length ? a : b);
   ghost.textContent = 'Working on ' + longest;
   document.body.appendChild(ghost);
@@ -360,6 +381,78 @@
 
   tick();
 })();
+
+/* ===== Theme toggle ===== */
+(function () {
+  const btn = document.getElementById('theme-toggle');
+  const icon = btn.querySelector('i');
+  function syncIcon() {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    icon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  }
+  btn.addEventListener('click', function () {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    syncIcon();
+  });
+  syncIcon();
+})();
+
+/* ===== Scroll reveal ===== */
+(function () {
+  const targets = document.querySelectorAll('.section, .bio-section');
+  targets.forEach(function (el) { el.classList.add('reveal'); });
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('visible'); });
+    return;
+  }
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  targets.forEach(function (el) { io.observe(el); });
+})();
+
+/* ===== Scroll progress + back-to-top + nav scrollspy ===== */
+(function () {
+  const bar = document.getElementById('scroll-progress');
+  const topBtn = document.getElementById('back-to-top');
+  const navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  const sections = navLinks
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+
+  function onScroll() {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    bar.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + '%';
+    topBtn.classList.toggle('show', doc.scrollTop > 480);
+
+    let current = -1;
+    const probe = doc.scrollTop + 120;
+    sections.forEach(function (sec, i) {
+      if (sec.offsetTop <= probe) current = i;
+    });
+    navLinks.forEach(function (a, i) {
+      a.classList.toggle('active', i === current);
+    });
+  }
+
+  topBtn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ===== Footer year ===== */
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 </script>
 
 </body>

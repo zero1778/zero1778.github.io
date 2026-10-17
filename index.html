@@ -6,9 +6,9 @@
   <meta name="author" content="Bang-Dang Pham">
   <meta name="description" content="Bang-Dang Pham - PhD Student at University of Wisconsin-Madison. Research in Computer Vision, Image Restoration, and Generative Models.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="preload" href="data/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="data/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="data/fonts/pacifico-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
@@ -51,7 +51,7 @@
         <span class="bio-name">Bang-Dang Pham</span>
         <p class="bio-tagline"><span class="tagline-static">Ph.D. Student @ UW-Madison &nbsp;·&nbsp; </span><span class="tagline-typewriter-line">Working on <span id="bio-typewriter"></span><span class="type-cursor">|</span></span></p>
         <p>
-          I am a second-year CS Ph.D. student at the
+          I am a third-year CS Ph.D. student at the
           <a href="https://www.cs.wisc.edu/">University of Wisconsin&ndash;Madison</a>.
           Previously, I was an AI Research Resident supervised by
           <a href="https://minhhoai.net/">Prof. Minh Hoai</a>,
@@ -73,7 +73,7 @@
         </p>
         <div class="bio-links">
           <a href="mailto:bangdang2000@gmail.com" class="bio-link-btn"><i class="fa-solid fa-envelope"></i> Email</a>
-          <a href="https://drive.google.com/file/d/1fF5VGTtfUYKKyUXrX-5mT-PoLihMguFB/view?usp=sharing" class="bio-link-btn"><i class="fa-solid fa-file-lines"></i> CV</a>
+          <a href="https://drive.google.com/file/d/1H3HYo7whoi6Je2ydNjo5KB3QOLp3nRmh/view?usp=sharing" class="bio-link-btn"><i class="fa-solid fa-file-lines"></i> CV</a>
           <a href="https://github.com/zero1778" class="bio-link-btn"><i class="fa-brands fa-github"></i> GitHub</a>
           <a href="https://scholar.google.com/citations?user=STehQhoAAAAJ&hl=en&authuser=1" class="bio-link-btn"><i class="fa-solid fa-graduation-cap"></i> Scholar</a>
           <a href="https://www.linkedin.com/in/pbdang2000/" class="bio-link-btn"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
@@ -81,7 +81,7 @@
         </div>
       </div>
       <div class="bio-photo">
-        <a href="data/avatar4.jpg">
+        <a href="#" aria-label="Back to top">
           <img alt="Bang-Dang Pham" src="data/thumbs/avatar_512.jpg" width="512" height="512" fetchpriority="high">
         </a>
       </div>
@@ -94,9 +94,15 @@
       <div class="news-list">
 
         <div class="news-item">
+          <span class="news-date">Aug 2026</span>
+          <span class="news-emoji">&#x1F393;</span>
+          <span>Received my <strong>Master's degree</strong> from <a href="https://www.cs.wisc.edu/">University of Wisconsin&ndash;Madison</a> and moving forward to my PhD.</span>
+        </div>
+
+        <div class="news-item">
           <span class="news-date">May 2026</span>
           <span class="news-emoji">&#x1F4BC;</span>
-          <span>I'm starting my <strong>Applied Scientist Internship</strong> at <a href="https://www.amazon.science/">Amazon</a>, working on World modeling and Video generation.</span>
+          <span>I'm starting my <strong>Applied Scientist Internship</strong> at <a href="https://www.amazon.science/">Amazon</a>, working on World modeling and Video generation. Beyond grateful to spend a while in Seattle, WA &ndash; the <em>Evergreen State</em> &#x1F332;</span>
         </div>
 
         <div class="news-item">
@@ -337,7 +343,7 @@
     </div>
 
     <footer class="footer">
-      &copy; <span id="footer-year">2026</span> Bang-Dang Pham &middot</a>
+      &copy; <span id="footer-year">2026</span> Bang-Dang Pham
     </footer>
 
   </div>
@@ -422,6 +428,7 @@
 (function () {
   const bar = document.getElementById('scroll-progress');
   const topBtn = document.getElementById('back-to-top');
+  const navEl = document.querySelector('nav');
   const navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
   const sections = navLinks
     .map(function (a) { return document.querySelector(a.getAttribute('href')); })
@@ -432,12 +439,19 @@
     const max = doc.scrollHeight - doc.clientHeight;
     bar.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + '%';
     topBtn.classList.toggle('show', doc.scrollTop > 480);
+    navEl.classList.toggle('solid', doc.scrollTop > 60);
 
+    // At the very bottom the page can no longer scroll a late section to
+    // the probe line, so the last one would never light up. Clamp to it.
     let current = -1;
-    const probe = doc.scrollTop + 120;
-    sections.forEach(function (sec, i) {
-      if (sec.offsetTop <= probe) current = i;
-    });
+    if (doc.scrollTop + doc.clientHeight >= doc.scrollHeight - 2) {
+      current = sections.length - 1;
+    } else {
+      const probe = doc.scrollTop + 120;
+      sections.forEach(function (sec, i) {
+        if (sec.offsetTop <= probe) current = i;
+      });
+    }
     navLinks.forEach(function (a, i) {
       a.classList.toggle('active', i === current);
     });

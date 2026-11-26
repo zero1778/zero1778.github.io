@@ -59,6 +59,7 @@
           <a href="https://scholar.google.com/citations?user=FYZ5ODQAAAAJ&hl=en">Dr. Tuan Anh Tran</a>
           at <a href="https://www.qualcomm.com/research/artificial-intelligence">Qualcomm AI Research</a> <em style="font-weight:400;">(formerly VinAI Research)</em>.
           In Summer 2025, I interned at <strong>Sony R&amp;D Lab</strong>, working on gallery-based image restoration.
+          Since May 2026, I have been an Applied Scientist Intern at <strong>Amazon</strong>, working on world modeling and video generation.
         </p>
         <p>
           I received my B.Sc. in Computer Science from
@@ -206,10 +207,43 @@
       <h2 class="section-heading">Highlighted Research</h2>
       <div class="papers-list">
 
+        <!-- Under review: PulseSplat (teaser = data/teasers/pulsesplat_teaser.mp4, Blender: camera orbits in the dark -> PulseSplat mesh -> numbers from the abstract; photon hits are illustrative) -->
+        <div class="paper-item">
+          <div class="paper-thumb">
+            <video src="data/teasers/pulsesplat_teaser.mp4" poster="data/thumbs/pulsesplat_600.jpg" width="640" height="640"
+                   autoplay muted loop playsinline preload="metadata" aria-label="PulseSplat teaser: a single-photon camera circles an object in the dark, PulseSplat reconstructs its 3D mesh, 36 times faster and with 2.7 times lower error than prior methods"></video>
+          </div>
+          <div class="paper-content">
+            <div class="paper-title">
+              <span>PulseSplat: Efficient and Accurate 3D Reconstruction from Single-Photon Cameras via Gaussian Splatting</span>
+            </div>
+            <div class="paper-authors">
+              <strong>Bang-Dang Pham</strong>,
+              Avery Gump,
+              Zhi Guo,
+              Fangzhou Mu,
+              Mohit Gupta,
+              Yin Li
+            </div>
+            <div class="venue-row">
+              <span class="venue-badge venue-review">Under Review</span>
+            </div>
+            <p class="paper-desc">
+              A <strong>Gaussian Splatting</strong> framework for multiview <strong><em>3D reconstruction from single-photon cameras</em></strong>
+              that renders transient histograms without costly ray-based sampling.
+              It works across diverse single-photon imaging systems, from low-resolution wide-FoV SPAD cameras to high-resolution SPAD LiDAR,
+              running <strong>at least 36&times; faster</strong> with <strong>over 2.7&times; lower reconstruction error</strong> than prior methods,
+              and further supports incremental reconstruction and camera self-calibration.
+            </p>
+          </div>
+        </div>
+
         <!-- Paper 1: BluRef -->
         <div class="paper-item">
           <div class="paper-thumb">
-            <img src="data/thumbs/bluref_600.jpg" alt="BluRef teaser" width="600" height="425" loading="lazy">
+            <!-- teaser = animated story with the PhoneCraft figure (cafe row): blurry photo (heavy camera-shake blur synthesised from the sharp crop) -> no sharp pair -> sharp references -> dense matching (schematic lines) -> BluRef; old still: data/thumbs/bluref_600.jpg -->
+            <video src="data/teasers/bluref_teaser.mp4" poster="data/thumbs/bluref_teaser_600.jpg" width="640" height="640"
+                   autoplay muted loop playsinline preload="metadata" aria-label="BluRef teaser: a motion-blurred photo has no sharp pair; sharp reference photos of the same place are densely matched to it, and it becomes sharp. BluRef: deblurring with unpaired references"></video>
           </div>
           <div class="paper-content">
             <div class="paper-title">
@@ -240,7 +274,9 @@
         <!-- Paper 2: Blur2Blur -->
         <div class="paper-item">
           <div class="paper-thumb">
-            <img src="data/thumbs/b2b_pipeline_600.jpg" alt="Blur2Blur pipeline" width="600" height="297" loading="lazy">
+            <!-- teaser = story with pictures from the project-page teaser (old_b2b/img/Teaser1.mp4): block at the top, photos below, curved arrows; snap a blurry photo -> deblur model -> still blurry; blurry photo -> Blur2Blur -> new blurry photo, zoom into both blur patterns; that photo -> same model -> sharp; ends on the project page's own Blur2Blur title (rendered from its CSS) -->
+            <video src="data/teasers/blur2blur_teaser.mp4" poster="data/thumbs/blur2blur_teaser_600.jpg" width="640" height="640"
+                   autoplay muted loop playsinline preload="metadata" aria-label="Blur2Blur teaser: a shaky camera takes a blurry photo; a deblurring model leaves it still blurry; Blur2Blur changes its blur pattern, shown zoomed in; the same model then gives a sharp photo"></video>
           </div>
           <div class="paper-content">
             <div class="paper-title">
@@ -462,6 +498,15 @@
   });
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+})();
+
+/* ===== Teaser videos: respect reduced motion (the poster frame stays) ===== */
+(function () {
+  if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.paper-thumb video').forEach(function (v) {
+    v.removeAttribute('autoplay');
+    v.pause();
+  });
 })();
 
 /* ===== Footer year ===== */

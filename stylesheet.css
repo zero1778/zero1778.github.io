@@ -477,11 +477,13 @@ html[data-theme="dark"] .exp-logo img{background:#fff;padding:5px}
   width:100%;border-radius:14px;overflow:hidden;background:transparent;
   aspect-ratio:auto;display:block;
 }
-.paper-thumb img{
+.paper-thumb img,
+.paper-thumb video{
   width:100%;height:auto;object-fit:contain;display:block;
   transition:transform .5s var(--ease);
 }
-.paper-item:hover .paper-thumb img{transform:scale(1.06)}
+.paper-item:hover .paper-thumb img,
+.paper-item:hover .paper-thumb video{transform:scale(1.06)}
 
 .paper-content{min-width:0}
 .paper-title{font-family:var(--display);font-size:21px;font-weight:800;line-height:1.3;margin-bottom:8px;letter-spacing:-.03em}
@@ -505,6 +507,9 @@ html[data-theme="dark"] .exp-logo img{background:#fff;padding:5px}
 }
 .venue-cvpr{
   background:linear-gradient(120deg,#F7DFA8,#E9B25C);color:#4A2D02;border:none;
+}
+.venue-review{
+  background:linear-gradient(120deg,#DCE7FF,#E7DDFF);color:#1E3A8A;border:none;
 }
 .paper-links{display:flex;flex-wrap:wrap;gap:7px}
 .paper-link-btn{
